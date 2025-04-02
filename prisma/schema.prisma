@@ -14,12 +14,26 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model EmpresaLogo {
+  id   Int   @id @default(autoincrement())
+  foto Bytes
+  empresa Empresa?
+}
+
 model Empresa {
   id           Int      @id @default(autoincrement())
   nombre       String   @db.VarChar(30)
   industria    String?   @db.VarChar(30)
   preferencias String?   @db.VarChar(500)
+  idFoto    Int @unique
+  EmpresaLogo      EmpresaLogo   @relation(fields: [id], references: [id])
   clientes     Cliente[]
+}
+
+model ClienteFoto {
+  id   Int   @id @default(autoincrement())
+  foto Bytes
+  cliente Cliente?
 }
 
 model Cliente {
@@ -29,9 +43,11 @@ model Cliente {
   telefono  String   @db.VarChar(11)
   contrasena String  @db.VarChar(50)
   idEmpresa Int?     
+  idFoto    Int @unique
   empresa   Empresa? @relation(fields: [idEmpresa], references: [id])
+  ClienteFoto      ClienteFoto   @relation(fields: [id], references: [id])
   negociaciones Negociacion[]
-}
+} 
 
 model Usuario {
   id        Int      @id @default(autoincrement())
@@ -49,7 +65,8 @@ model Negociacion {
   fecha       DateTime
   asunto      String   @db.VarChar(50)
   descripcion String   @db.VarChar(500)
-  
+  comision    Float
+  total       Float
   usuario     Usuario  @relation(fields: [idUsuarios], references: [id])
   cliente     Cliente  @relation(fields: [idClientes], references: [id])
   estado      Estado   @relation(fields: [idEstado], references: [id])
@@ -62,10 +79,19 @@ model Estado {
   negociaciones Negociacion[]
 }
 
+model ProductoServicioFoto {
+  id   Int   @id @default(autoincrement())
+  foto Bytes
+  ProductoServicio ProductoServicio?
+}
+
 model ProductoServicio {
   id     Int    @id @default(autoincrement())
   nombre String @db.VarChar(30)
   precio Float
+  stock Int 
+  idFoto    Int @unique
+  ProductoServicioFoto      ProductoServicioFoto   @relation(fields: [id], references: [id])
   negociaciones ProductoNegociacion[]
 }
 
@@ -73,7 +99,7 @@ model ProductoNegociacion {
   idProducto    Int
   idNegociacion Int
   cantidad      Int
-  
+  subtotal      Float
   producto      ProductoServicio @relation(fields: [idProducto], references: [id])
   negociacion   Negociacion      @relation(fields: [idNegociacion], references: [id])
   
