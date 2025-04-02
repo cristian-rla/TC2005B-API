@@ -1,10 +1,12 @@
+import { Request, Response, NextFunction } from "express";
+
 const ProductController = require('../controllers/product');
 const productService = require('../db/product');
 
 const controller = new ProductController(productService);
 
 class CustomerHttpHandler {
-  async getAll(req, res, next) {
+  async getAll(req:Request, res:Response, next:NextFunction) {
     try {
       const customers = await controller.getAll();
       res.json(customers);
@@ -13,7 +15,7 @@ class CustomerHttpHandler {
     }
   }
 
-  async getById(req, res, next) {
+  async getById(req:Request, res:Response, next:NextFunction) {
     try {
       const customer = await controller.getById(req.params.id);
       res.json(customer);
@@ -22,7 +24,7 @@ class CustomerHttpHandler {
     }
   }
 
-  async create(req, res, next) {
+  async create(req:Request, res:Response, next:NextFunction) {
     try {
       const { name, email } = req.body;
       const newCustomer = await controller.create(name, email);
@@ -32,7 +34,7 @@ class CustomerHttpHandler {
     }
   }
 
-  async update(req, res, next) {
+  async update(req:Request, res:Response, next:NextFunction) {
     try {
       const { name, email } = req.body;
       const updatedCustomer = await controller.update(req.params.id, name, email);
@@ -42,7 +44,7 @@ class CustomerHttpHandler {
     }
   }
 
-  async delete(req, res, next) {
+  async delete(req:Request, res:Response, next:NextFunction) {
     try {
       await controller.delete(req.params.id);
       res.status(204).send();

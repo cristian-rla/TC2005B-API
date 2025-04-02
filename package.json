@@ -18,5 +18,8 @@
     "express": "^4.21.2",
     "nodeman": "^1.1.2",
     "prisma": "^6.5.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9"
   }
 }
