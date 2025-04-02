@@ -15,7 +15,7 @@ datasource db {
 }
 
 model EmpresaLogo {
-  id   Int   @id @default(autoincrement())
+  idFoto   Int   @id @default(autoincrement())
   foto Bytes
   empresa Empresa?
 }
@@ -26,12 +26,12 @@ model Empresa {
   industria    String?   @db.VarChar(30)
   preferencias String?   @db.VarChar(500)
   idFoto    Int @unique
-  EmpresaLogo      EmpresaLogo   @relation(fields: [idFoto], references: [id])
+  EmpresaLogo      EmpresaLogo   @relation(fields: [idFoto], references: [idFoto])
   clientes     Cliente[]
 }
 
 model ClienteFoto {
-  id   Int   @id @default(autoincrement())
+  idFoto   Int   @id @default(autoincrement())
   foto Bytes
   cliente Cliente?
 }
@@ -44,8 +44,8 @@ model Cliente {
   contrasena String  @db.VarChar(50)
   idEmpresa Int     
   idFoto    Int @unique
-  empresa   Empresa? @relation(fields: [idEmpresa], references: [id])
-  ClienteFoto      ClienteFoto   @relation(fields: [idFoto], references: [id])
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  ClienteFoto      ClienteFoto   @relation(fields: [idFoto], references: [idFoto])
   negociaciones Negociacion[]
 } 
 
@@ -80,7 +80,7 @@ model Estado {
 }
 
 model ProductoServicioFoto {
-  id   Int   @id @default(autoincrement())
+  idFoto   Int   @id @default(autoincrement())
   foto Bytes
   ProductoServicio ProductoServicio?
 }
@@ -91,7 +91,7 @@ model ProductoServicio {
   precio Float
   stock Int 
   idFoto    Int @unique
-  ProductoServicioFoto      ProductoServicioFoto   @relation(fields: [idFoto], references: [id])
+  ProductoServicioFoto      ProductoServicioFoto   @relation(fields: [idFoto], references: [idFoto])
   negociaciones ProductoNegociacion[]
 }
 
