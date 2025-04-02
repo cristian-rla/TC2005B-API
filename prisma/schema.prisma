@@ -42,7 +42,7 @@ model Cliente {
   nombre    String   @db.VarChar(50)
   telefono  String   @db.VarChar(11)
   contrasena String  @db.VarChar(50)
-  idEmpresa Int?     
+  idEmpresa Int @unique     
   idFoto    Int @unique
   empresa   Empresa? @relation(fields: [idEmpresa], references: [id])
   ClienteFoto      ClienteFoto   @relation(fields: [id], references: [id])
