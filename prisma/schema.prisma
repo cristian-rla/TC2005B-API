@@ -26,7 +26,7 @@ model Empresa {
   industria    String?   @db.VarChar(30)
   preferencias String?   @db.VarChar(500)
   idFoto    Int @unique
-  EmpresaLogo      EmpresaLogo   @relation(fields: [idFoto], references: [idFoto])
+  EmpresaLogo    EmpresaLogo?   @relation(fields: [idFoto], references: [idFoto])
   clientes     Cliente[]
 }
 
