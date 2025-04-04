@@ -6,4 +6,8 @@ class ProductService {
     }
   }
 
-export default new ProductService();
+const singleProductService = new ProductService();
+
+export default singleProductService;
+export {ProductService, singleProductService};
+// Si hago el export default con los dos entre llaves, exportas solo un objeto
