@@ -8,3 +8,5 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api", productRouter);
+
+app.listen(3000, () => console.log("Server running on http://localhost:3000"));

@@ -1,8 +1,8 @@
 import express from 'express'
-import handler from "../handlers/product"
+import ProductHandler from "../handlers/product"
 
 const router = express.Router();
 
-router.get("/", handler.getAll);
-
+router.get("/", ProductHandler.getAll);
+// router.post("/", ProductHandler.postProduct);
 export default router;

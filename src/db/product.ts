@@ -4,6 +4,11 @@ class ProductService {
     async getAllProducts() {
       return await prisma.productoServicio.findMany();
     }
+    /*
+    async postProduct(){
+      return await prisma.productoServicio.create({});
+    }
+    */
   }
 
 const singleProductService = new ProductService();
