@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-
-const ProductController = require('../controllers/product');
-const productService = require('../db/product');
+import ProductController from "../controllers/product"
+import productService from '../db/product';
 
 const controller = new ProductController(productService);
 
