@@ -8,7 +8,7 @@ class ProductController{
     async getAll(){
         return await this.service.getAllProducts();
     }
-    /*
+    /* 
     async postProduct(){
         return await this.service.postProduct();
     }
