@@ -34,7 +34,7 @@ class ProductHttpHandler {
       next(error)
     }
   }
-  
+
   async updateProduct(req:Request, res:Response, next:NextFunction){
     try{
       // VALIDACIÓN CON ZOD
@@ -43,7 +43,15 @@ class ProductHttpHandler {
     } catch(error){
         res.status(409).json(error);
     }
-
+  }
+  
+  async deleteProduct(req:Request, res:Response, next:NextFunction){
+    try{
+      await productController.deleteProduct(Number(req.params.id));
+      res.status(200).json("Se eliminó el producto satisfactoriamente");
+    } catch(error){
+      res.status(409).json(error);
+    }
   }
 }
 

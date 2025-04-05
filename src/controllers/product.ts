@@ -18,7 +18,9 @@ class ProductController{
     async updateProduct(id:number, productData:Prisma.ProductoServicioUpdateInput){
         return await this.service.updateProduct(id, productData);
     }
-
+    async deleteProduct(id:number){
+        return await this.service.deleteProduct(id);
+    }
 }
 
 export default ProductController;

@@ -25,6 +25,13 @@ class ProductService {
         data:newProductData
       });
     }
+
+    async deleteProduct(id:number){
+      return await prismaClient.productoServicio.delete({
+        where:{id:id}
+        })
+    }
+
   }
 
 const singleProductService = new ProductService();
