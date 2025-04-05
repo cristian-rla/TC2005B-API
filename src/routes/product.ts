@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.get("/", ProductHandler.getAll);
 // router.post("/", ProductHandler.postProduct);
-export default router;
+export default router;  

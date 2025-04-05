@@ -7,6 +7,7 @@ const userController = new UserController(userService);
 
 class UserHttpHandler{
     async addUser(req:Request, res:Response, next:NextFunction){
+        // CHECAR CON USER SCHEMA DE ZOD EL TIPO DE REQ.BODY
         try{
             userController.createUser(req.body)
             res.status(201).json("El usuario fue creado correctamente");

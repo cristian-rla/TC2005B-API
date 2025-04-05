@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.9",
-    "prisma-to-zod": "^0.2.4"
+    "@types/jsonwebtoken": "^9.0.9"
   }
 }

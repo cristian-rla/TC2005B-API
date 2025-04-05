@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import ProductController from "../controllers/product"
 import productService from '../db/product';
+import {z} from 'zod'
 
 const productController = new ProductController(productService);
 
@@ -16,6 +17,7 @@ class ProductHttpHandler {
   
   async postProduct(req:Request, res:Response, next:NextFunction){
     try {
+      // VALIDACIÓN IMPORTANTE CON ZOD
       const products = await productController.createProduct(req.body); // IMPORTANTE CHECAR QUE SEA EL TIPO SOLICITADO
       res.status(201).json(products);
     } catch(error){
