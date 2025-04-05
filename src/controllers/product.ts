@@ -15,6 +15,9 @@ class ProductController{
     async getProductById(id:number){
         return await this.service.getById(id);
     }
+    async updateProduct(id:number, productData:Prisma.ProductoServicioUpdateInput){
+        return await this.service.updateProduct(id, productData);
+    }
 
 }
 

@@ -14,6 +14,15 @@ class ProductHttpHandler {
       next(error);
     }
   }
+
+  async getProductById(req:Request, res:Response, next:NextFunction){
+    try{
+      const product = await productController.getProductById(req.body.id);
+    } catch(error){
+      res.status(404).json(error);
+      //next(error);
+    }
+  }
   
   async postProduct(req:Request, res:Response, next:NextFunction){
     try {
