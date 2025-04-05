@@ -1,5 +1,9 @@
 import {AuthService} from "../db/auth"
 import { Prisma } from "@prisma/client";
+interface LoginData{
+    email:string,
+    password:string
+}
 
 class AuthController{
     service:AuthService;
@@ -8,12 +12,15 @@ class AuthController{
     }
     async createUser(userData:Prisma.UsuarioUncheckedCreateInput){
         if(await this.service.findEmail(userData.email)){
-            throw(new Error("Email already has an associated account"));
+            throw(new Error("Este email ya tiene una cuenta asociada"));
         }
         this.service.create(userData);
     }
-    async verify(){
-    
+    async verifyEmail(loginData:LoginData){
+        if(!await this.service.verifyLogin(loginData)){
+            throw (new Error("No se encontró el email"))
+        }
+        return true;
     }
 }
 

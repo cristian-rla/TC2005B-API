@@ -7,18 +7,20 @@ const authController = new AuthController(authService);
 
 class AuthHandler{
     async logIn(req:Request, res:Response, next:NextFunction){
-        return await authController.verifyEmail(req.body);
+        if (!await authController.verifyEmail(req.body.email)){
+            throw (new Error("La cuenta ya existe"))
+        }
     }
 
     async signUp(req:Request, res:Response, next:NextFunction){
         try{
             authController.createUser(req.body);
-            res.status(201).json("El usuario fue creado correctamente");
+            res.status(201).json({ message: "El usuario fue creado correctamente"});
         } catch(error){
-            res.status(500).json({ message: "Internal server error" });
+            res.status(404).json({ message: "Error en la creación del usuario" });
             //next(error);
         }    
     }
 }
 
-export default AuthHandler;
+export default new AuthHandler();

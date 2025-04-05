@@ -12,6 +12,14 @@ class AuthService{
             data:userData
         })
     }
+    async verifyLogin({email, password}:{email:string, password:string}){
+        return await prismaClient.usuario.findFirst({
+            where:{
+                email:email,
+                contraseña:password
+            }
+        })
+    }
 }
 
 const singleAuthService = new AuthService();

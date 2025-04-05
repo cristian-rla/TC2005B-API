@@ -53,7 +53,7 @@ model Usuario {
   id        Int      @id @default(autoincrement())
   nombre    String   @db.VarChar(50)
   email     String   @unique @db.VarChar(50)
-  contraseña String   @db.VarChar(512)
+  contrasena String   @db.VarChar(512)
   negociaciones Negociacion[]
 }
 
