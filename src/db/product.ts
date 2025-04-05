@@ -6,7 +6,7 @@ class ProductService {
       return await prismaClient.productoServicio.findMany();
     }
 
-    async createProduct(productData: Prisma.ProductoServicioCreateInput){
+    async createProduct(productData: Prisma.ProductoServicioUncheckedCreateInput){
       const newProduct = await prismaClient.productoServicio.create({
         data: productData
       });
@@ -19,7 +19,7 @@ class ProductService {
       });
     }
 
-    async updateProduct(productId:number, newProductData:Prisma.ProductoServicioUpdateInput){
+    async updateProduct(productId:number, newProductData:Prisma.ProductoServicioUncheckedUpdateInput){
       return await prismaClient.productoServicio.update({
         where:{id:productId},
         data:newProductData

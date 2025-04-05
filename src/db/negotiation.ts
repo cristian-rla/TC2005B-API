@@ -10,7 +10,7 @@ class NegotiationService{
             where:{id:negotiationId}
         });
     }
-    async create(newProductData:Prisma.NegociacionCreateInput){
+    async create(newProductData:Prisma.NegociacionUncheckedCreateInput){
         return prismaClient.negociacion.create({
             data:newProductData
         });
@@ -20,7 +20,7 @@ class NegotiationService{
             where:{id:negotiationId}
         });
     }
-    async update(negotiationId:number, newProductData:Prisma.NegociacionUpdateInput){
+    async update(negotiationId:number, newProductData:Prisma.NegociacionUncheckedUpdateInput){
         return prismaClient.negociacion.update({
             where:{id:negotiationId},
             data:newProductData

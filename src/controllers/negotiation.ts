@@ -21,13 +21,13 @@ class NegotiationController{
     async getNegotiationById(id:number){
         return await this.service.getById(id);
     }
-    async addNegotiation(negotiationData:Prisma.NegociacionCreateInput){
+    async addNegotiation(negotiationData:Prisma.NegociacionUncheckedCreateInput){
         return await this.service.create(negotiationData);
     }
     async deleteNegotiation(id:number){
         return await this.service.delete(id);
     }
-    async updateNegotiation(id:number, newData:Prisma.NegociacionUpdateInput){
+    async updateNegotiation(id:number, newData:Prisma.NegociacionUncheckedUpdateInput){
         return await this.service.update(id, newData);
     }
 }
