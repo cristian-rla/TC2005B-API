@@ -13,3 +13,5 @@ class AuthController{
         this.service.createUser(userData);
     }
 }
+
+export default AuthController;

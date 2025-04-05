@@ -5,11 +5,11 @@ import authService from "../db/auth"
 
 const authController = new AuthController(authService);
 
-class authHandler{
+class AuthHandler{
     async logIn(req:Request, res:Response, next:NextFunction){
         return await authController.verifyEmail(req.body);
     }
-    
+
     async signUp(req:Request, res:Response, next:NextFunction){
         try{
             authController.createUser(req.body);
@@ -20,3 +20,5 @@ class authHandler{
         }    
     }
 }
+
+export default AuthHandler;
