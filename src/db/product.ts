@@ -13,22 +13,22 @@ class ProductService {
       return newProduct;
     }
 
-    async getById(id:number){
+    async getById(productId:number){
       return await prismaClient.productoServicio.findUnique({
-        where:{id:id}
+        where:{id:productId}
       });
     }
 
-    async updateProduct(id:number, newProductData:Prisma.ProductoServicioUpdateInput){
+    async updateProduct(productId:number, newProductData:Prisma.ProductoServicioUpdateInput){
       return await prismaClient.productoServicio.update({
-        where:{id:id},
+        where:{id:productId},
         data:newProductData
       });
     }
 
-    async deleteProduct(id:number){
+    async deleteProduct(productId:number){
       return await prismaClient.productoServicio.delete({
-        where:{id:id}
+        where:{id:productId}
         })
     }
 

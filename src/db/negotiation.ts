@@ -5,6 +5,27 @@ class NegotiationService{
     async getAll(){
         return prismaClient.negociacion.findMany();
     }
+    async getById(negotiationId:number){
+        return prismaClient.negociacion.findUnique({
+            where:{id:negotiationId}
+        });
+    }
+    async create(newProductData:Prisma.NegociacionCreateInput){
+        return prismaClient.negociacion.create({
+            data:newProductData
+        });
+    }
+    async delete(negotiationId:number){
+        return prismaClient.negociacion.delete({
+            where:{id:negotiationId}
+        });
+    }
+    async update(negotiationId:number, newProductData:Prisma.NegociacionUpdateInput){
+        return prismaClient.negociacion.update({
+            where:{id:negotiationId},
+            data:newProductData
+        });
+    }
 }
 
 const singleNegotiationService = new NegotiationService();

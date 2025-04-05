@@ -3,8 +3,13 @@ import prismaClient from "./prisma";
 
 class AuthService{
     async findEmail(email:string){
-
+        return prismaClient.usuario.findFirst({
+            where:{email:email}
+        });
     }
 }
 
-export default new AuthService();
+const singleAuthService = new AuthService();
+
+export {AuthService, singleAuthService}
+export default singleAuthService;
