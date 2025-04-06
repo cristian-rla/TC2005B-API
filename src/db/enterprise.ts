@@ -47,4 +47,5 @@ class EnterpriseService{
 }
 
 const singleEnterpriseService = new EnterpriseService();
+export {EnterpriseService, singleEnterpriseService}
 export default singleEnterpriseService;

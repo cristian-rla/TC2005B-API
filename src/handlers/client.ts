@@ -7,7 +7,7 @@ const clientController = new ClientController(clientService);
 class ClientHandler{
     async getAllClients(req:Request, res:Response, next:NextFunction){
         try{
-            const clients = await clientController.getClientById(Number(req.params.id));
+            const clients = await clientController.getAllClients();
             res.status(200).json(clients);
         } catch(error){
             res.status(404).json(error);

@@ -26,9 +26,9 @@ class ClientController{
         
         const {empresa, ...newClientData} = parsed.data;
 
-        let enterpriseData = singleEnterpriseService.getByName(empresa);
+        let enterpriseData = await singleEnterpriseService.getByName(empresa);
         if(!enterpriseData){
-            enterpriseData = singleEnterpriseService.create({nombre:empresa});
+            enterpriseData = await singleEnterpriseService.create({nombre:empresa});
         }
 
         return await this.service.create({idEmpresa:enterpriseData.id, ...newClientData});
