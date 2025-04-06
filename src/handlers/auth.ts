@@ -7,8 +7,16 @@ const authController = new AuthController(authService);
 
 class AuthHandler{
     async logIn(req:Request, res:Response, next:NextFunction){
-        if (!await authController.verifyEmail(req.body)){
-            throw (new Error("La cuenta ya existe"))
+        try{
+            if (!await authController.verifyEmail(req.body)){
+                throw (new Error("La cuenta ya existe"))
+            }
+        } catch(error:unknown){
+            if (error instanceof Error) {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(404).json({ message: "No se pudo completar" });
+            }        
         }
     }
 
@@ -16,10 +24,13 @@ class AuthHandler{
         try{
             authController.createUser(req.body);
             res.status(201).json({ message: "El usuario fue creado correctamente"});
-        } catch(error){
-            res.status(404).json({ message: "Error en la creación del usuario" });
-            //next(error);
-        }    
+        } catch(error:unknown){
+            if (error instanceof Error) {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(404).json({ message: "No se pudo completar" });
+            }        
+        }  
     }
 }
 

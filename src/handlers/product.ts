@@ -10,8 +10,12 @@ class ProductHttpHandler {
     try {
       const products = await productController.getAll();
       res.json(products);
-    } catch (error) {
-      next(error);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
 
@@ -19,9 +23,12 @@ class ProductHttpHandler {
     try{
       const product = await productController.getProductById(Number(req.params.id)); // query params se pasan como strings por defecto. id convertido a numero 
       res.status(200).json(product);
-    } catch(error){
-      res.status(404).json(error);
-      //next(error);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
   
@@ -30,8 +37,12 @@ class ProductHttpHandler {
       // VALIDACIÓN IMPORTANTE CON ZOD
       const products = await productController.createProduct(req.body); // IMPORTANTE CHECAR QUE SEA EL TIPO SOLICITADO
       res.status(201).json(products);
-    } catch(error){
-      next(error)
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
 
@@ -40,8 +51,12 @@ class ProductHttpHandler {
       // VALIDACIÓN CON ZOD
       await productController.updateProduct(Number(req.params.id), req.body);
       res.status(200).json("Se actualizó el producto correctamente");
-    } catch(error){
-        res.status(409).json(error);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
   
@@ -49,8 +64,12 @@ class ProductHttpHandler {
     try{
       await productController.deleteProduct(Number(req.params.id));
       res.status(200).json("Se eliminó el producto satisfactoriamente");
-    } catch(error){
-      res.status(409).json(error);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
 }

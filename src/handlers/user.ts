@@ -11,9 +11,12 @@ class UserHttpHandler{
         try{
             userController.createUser(req.body)
             res.status(201).json("El usuario fue creado correctamente");
-        } catch(error){
-            res.status(500).json({ message: "Internal server error" });
-            //next(error);
+        } catch(error:unknown){
+            if (error instanceof Error) {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(404).json({ message: "No se pudo completar" });
+            }        
         }
     }
 }
