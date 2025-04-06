@@ -38,8 +38,23 @@ class ClientController{
         return await this.service.create({idEmpresa:enterpriseData.id, ...newClientData});
     }
 
-    async updateClient(id:number, clientData:Prisma.ClienteUncheckedCreateInput){
-        return await this.service.update(id,clientData);
+    async updateClient(id:number, clientData:unknown){
+        const parsed = ClientSchema.safeParse(clientData);
+        if(!parsed.data){
+            throw (new Error("Los datos proporcionados no van acorde al schema"));
+        }
+
+        const currentClient = await this.service.getById(id);
+        if(!currentClient){
+            throw(new Error("No hay cliente asociado a este id"));
+        }
+
+        let enterpriseData = await singleEnterpriseService.getById(currentClient.idEmpresa);
+        if(!enterpriseData){
+            enterpriseData = await singleEnterpriseService.create({nombre:parsed.data.empresa});
+        }
+
+        return await this.service.update(id, {idEmpresa:enterpriseData.id, ...parsed.data});
     }
 
     async deleteClient(id:number){

@@ -11,6 +11,11 @@ class EnterpriseService{
             where:{nombre:enterpriseName}
         })
     }
+    async getById(enterpriseId:number){
+        return await prismaClient.empresa.findUnique({
+            where:{id:enterpriseId}
+        });
+    }
     async create(enterprise:Prisma.EmpresaUncheckedCreateInput){
         return await prismaClient.empresa.create({
             data:enterprise
