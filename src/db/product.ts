@@ -1,5 +1,5 @@
-import prismaClient from "./prisma";
 import { Prisma } from "@prisma/client";
+import prismaClient from "./prisma.ts";
 
 class ProductService {
     async getAllProducts() {

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prismaClient from "./prisma";
+import prismaClient from "./prisma.ts";
 
 class AuthService{
     async findEmail(email:string){

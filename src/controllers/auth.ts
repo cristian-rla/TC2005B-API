@@ -1,5 +1,6 @@
-import {AuthService} from "../db/auth"
 import { Prisma } from "@prisma/client";
+import {AuthService} from "../db/auth.ts"
+
 interface LoginData{
     email:string,
     password:string

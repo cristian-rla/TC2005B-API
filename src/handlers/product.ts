@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import ProductController from "../controllers/product"
-import productService from '../db/product';
+import ProductController from "../controllers/product.ts"
+import productService from '../db/product.ts';
 import {z} from 'zod'
 
 const productController = new ProductController(productService);

@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express'
 
-import NegotationController from "../controllers/negotiation"
-import negotiationService from "../db/negotiation"
+import NegotationController from "../controllers/negotiation.ts"
+import negotiationService from "../db/negotiation.ts"
 
 const negotiationController = new NegotationController(negotiationService);
 

@@ -1,5 +1,5 @@
-import prisma from "./prisma";
 import { Prisma } from "@prisma/client";
+import prisma from "./prisma.ts";
 
 class UserService{
     async findEmail(email:string){ // No se puede utilizar findUnique porque el parámetro de búsqueda no es un identificador único

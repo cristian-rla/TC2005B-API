@@ -1,5 +1,5 @@
-import {UserService} from "../db/user"
 import { Prisma } from "@prisma/client";
+import {UserService} from "../db/user.ts"
 
 class UserController{
     service:UserService;

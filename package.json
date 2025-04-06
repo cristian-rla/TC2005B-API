@@ -4,8 +4,8 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "start": "nodeman server.ts",
-    "dev": "nodeman server.ts",
+    "start": "nodemon server.ts",
+    "dev": "nodemon server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

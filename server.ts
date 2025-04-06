@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import productRouter from "./src/routes/product"
-import negotiationRouter from "./src/routes/negotiation"
-import clientRouter from "./src/routes/client"
-import authRouter from "./src/routes/auth"
+import productRouter from "./src/routes/product.ts"
+import negotiationRouter from "./src/routes/negotiation.ts"
+import clientRouter from "./src/routes/client.ts"
+import authRouter from "./src/routes/auth.ts"
 
 const app = express();
 
