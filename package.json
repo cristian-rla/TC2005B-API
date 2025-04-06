@@ -4,8 +4,8 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "start": "nodemon --exec ts-node --esm server.ts",
-    "dev": "nodemon server.ts",
+    "start": "tsx server.ts",
+    "dev": "tsx server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
