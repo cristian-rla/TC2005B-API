@@ -31,8 +31,9 @@ class ClientHandler{
     }
     async postClient(req:Request, res:Response, next:NextFunction){
         try{
+            console.log(req.body)
             const client = await clientController.addClient(req.body);
-            res.status(200).json({ message:"El cliente fue agregado exitosamente"});
+            res.status(200).json({ message:"El cliente fue agregado exitosamente", client});
         } catch(error:unknown){
             if (error instanceof Error) {
                 res.status(404).json({ message: error.message });

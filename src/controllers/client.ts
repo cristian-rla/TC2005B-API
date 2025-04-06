@@ -23,7 +23,7 @@ class ClientController{
         if (!parsed.success){
             throw(new Error("Los datos proporcionados no van acorde al esquema"))
         }
-        
+
         const {empresa, ...newClientData} = parsed.data;
 
         let enterpriseData = await singleEnterpriseService.getByName(empresa);
