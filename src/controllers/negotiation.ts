@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import {NegotiationService} from "../db/negotiation.ts"
+import {NegotiationService} from "../db/negotiation"
 
 class NegotiationController{
     service:NegotiationService;

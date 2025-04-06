@@ -1,5 +1,5 @@
 import express from 'express'
-import clientHandler from '../handlers/client.ts'
+import clientHandler from '../handlers/client'
 
 const router = express.Router();
 

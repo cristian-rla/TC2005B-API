@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express'
 
-import UserController from "../controllers/user.ts"
-import userService from "../db/user.ts"
+import UserController from "../controllers/user"
+import userService from "../db/user"
 
 const userController = new UserController(userService);
 

@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express'
 
-import AuthController from "../controllers/auth.ts"
-import authService from "../db/auth.ts"
+import AuthController from "../controllers/auth"
+import authService from "../db/auth"
 
 const authController = new AuthController(authService);
 

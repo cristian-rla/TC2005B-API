@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from 'express'
-import ClientController from '../controllers/client.ts'
-import clientService from "../db/client.ts"
+import ClientController from '../controllers/client'
+import clientService from "../db/client"
 
 const clientController = new ClientController(clientService);
 

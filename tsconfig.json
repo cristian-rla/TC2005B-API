@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true
+    "target": "ESNext",                     // Asegúrate de que el objetivo sea ESNext
+    "module": "ESNext",                     // Usa módulos ES
+    "moduleResolution": "Node",             // Usar resolución de módulos tipo Node
+    "esModuleInterop": true,                // Interoperabilidad con CommonJS
+    "allowSyntheticDefaultImports": true,   // Importaciones por defecto sintéticas
+    "strict": true,                         // Modo estricto para errores y advertencias
+    "skipLibCheck": true,                   // Omite la verificación de bibliotecas
+    "resolveJsonModule": true,              // Permite importar JSON
+    "noEmit": true,                         // No emite archivos JavaScript, sólo transpila
+    "allowImportingTsExtensions": true      // Permite importar archivos .ts directamente
   },
   "ts-node": {
-    "esm": true
+    "experimentalSpecifierResolution": "node",
+    "esm": true  // Asegúrate de que ts-node use módulos ES
   }
 }

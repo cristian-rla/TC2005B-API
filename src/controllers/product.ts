@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import {ProductService} from "../db/product.ts" 
+import {ProductService} from "../db/product" 
 
 class ProductController{
     service:ProductService;

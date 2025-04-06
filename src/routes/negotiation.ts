@@ -1,5 +1,5 @@
 import express from 'express'
-import negotiationHandler from '../handlers/negotiation.ts'
+import negotiationHandler from '../handlers/negotiation'
 
 const router = express.Router();
 
