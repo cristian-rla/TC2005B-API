@@ -24,6 +24,10 @@ class ClientController{
             throw(new Error("Los datos proporcionados no van acorde al esquema"))
         }
 
+        if(await this.service.getByEmail(parsed.data.correo)){
+            throw(new Error("Ya hay un cliente asociado a esta cuenta"));
+        }
+
         const {empresa, ...newClientData} = parsed.data;
 
         let enterpriseData = await singleEnterpriseService.getByName(empresa);
@@ -39,6 +43,7 @@ class ClientController{
     }
 
     async deleteClient(id:number){
+        
         return await this.service.delete(id);
     }
 }

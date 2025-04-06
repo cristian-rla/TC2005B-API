@@ -10,6 +10,11 @@ class ClientService{
             where:{id:idClient}
         });
     }
+    async getByEmail(correoCliente:string){
+        return await prismaClient.cliente.findFirst({
+            where:{correo:correoCliente}
+        });
+    }
     async create(clientData:Prisma.ClienteUncheckedCreateInput){
         return await prismaClient.cliente.create({
             data:clientData
