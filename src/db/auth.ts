@@ -16,7 +16,7 @@ class AuthService{
         return await prismaClient.usuario.findFirst({
             where:{
                 email:email,
-                contraseña:password
+                contrasena:password
             }
         })
     }

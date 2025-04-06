@@ -7,7 +7,7 @@ const authController = new AuthController(authService);
 
 class AuthHandler{
     async logIn(req:Request, res:Response, next:NextFunction){
-        if (!await authController.verifyEmail(req.body.email)){
+        if (!await authController.verifyEmail(req.body)){
             throw (new Error("La cuenta ya existe"))
         }
     }
