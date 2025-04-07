@@ -40,7 +40,7 @@ class ClientController{
 
     async updateClient(id:number, clientData:unknown){
         const parsed = ClientSchema.safeParse(clientData);
-        if(!parsed.data){
+        if(!parsed.success){
             throw (new Error("Los datos proporcionados no van acorde al schema"));
         }
 
