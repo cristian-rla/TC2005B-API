@@ -1,14 +1,17 @@
 import { Prisma } from "@prisma/client";
-import prisma from "./prisma";
+import prismaClient from "./prisma";
 
 class UserService{
     async findEmail(email:string){ // No se puede utilizar findUnique porque el parámetro de búsqueda no es un identificador único
-        return await prisma.cliente.findFirst({where:{correo:email}});
+        return await prismaClient.cliente.findFirst({where:{correo:email}});
     }
     async createUser(userData:Prisma.UsuarioUncheckedCreateInput){
-        const user = await prisma.usuario.create({
+        return await prismaClient.usuario.create({
             data: userData // NO se especifica con prisma el id, se indica en el objeto tipo empresa que está relacionado a cliente
         });
+    }
+    async getAllUsers(){
+        return await prismaClient.usuario.findMany({});
     }
 }
 

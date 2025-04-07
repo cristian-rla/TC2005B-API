@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
-import {NegotiationService} from "../db/negotiation"
+import { NegotiationService } from "../db/negotiation"
+import { negotiationSchema } from "../schemas/negotiationSchema";
 
 class NegotiationController{
     service:NegotiationService;
@@ -22,7 +23,12 @@ class NegotiationController{
         return await this.service.getById(id);
     }
     async addNegotiation(negotiationData:unknown){
-
+        const parsed = negotiationSchema.safeParse(negotiationData);
+        
+        if(!parsed.success){
+            throw new Error("Los datos no cumplen con el schema de negociación")
+        }
+        
         return await this.service.create(negotiationData);
     }
     async deleteNegotiation(id:number){
