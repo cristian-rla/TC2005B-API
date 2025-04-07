@@ -1,6 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { NegotiationService } from "../db/negotiation"
 import { negotiationSchema } from "../schemas/negotiationSchema";
+import { singleClientService } from "../db/client";
+import singleUserService from "../db/user";
+import { PrismaClientUnknownRequestError } from "@prisma/client/runtime/library";
 
 class NegotiationController{
     service:NegotiationService;
@@ -11,31 +14,35 @@ class NegotiationController{
     async getAllNegotiations(){
         return await this.service.getAll();
     }
-    async getAllNegotiationsBystates(){
-        const negotiations = await this.service.getAll();
-        const negotiationsByState:(Prisma.NegociacionUncheckedCreateInput[])[] = [[],[],[],[],[]];
-        for(const neg of negotiations){
-            negotiationsByState[neg.idEstado - 1].push(neg);
-        }
-        return negotiationsByState;
-    }
     async getNegotiationById(id:number){
         return await this.service.getById(id);
     }
     async addNegotiation(negotiationData:unknown){
         const parsed = negotiationSchema.safeParse(negotiationData);
+        if(!parsed.success) throw new Error("Los datos mandados no cumplen con el schema de negociación")
         
-        if(!parsed.success){
-            throw new Error("Los datos no cumplen con el schema de negociación")
-        }
+        const client = await singleClientService.getById(parsed.data.idClientes);
+        if (!client) throw new Error(`El cliente de id ${parsed.data.idClientes} no existe`);
         
-        return await this.service.create(negotiationData);
+        const user = await singleUserService.getById(parsed.data.idUsuarios);
+        if (!user) throw new Error(`El usuario de id ${parsed.data.idUsuarios} no existe`);
+
+        return await this.service.create(parsed.data);
     }
     async deleteNegotiation(id:number){
         return await this.service.delete(id);
     }
-    async updateNegotiation(id:number, newData:Prisma.NegociacionUncheckedUpdateInput){
-        return await this.service.update(id, newData);
+    async updateNegotiation(id:number, newNegotiationData:unknown){
+        const parsed = negotiationSchema.safeParse(newNegotiationData);
+        if (!parsed.success) throw new Error("Los datos mandados no cumplen con el schema de negociación");
+
+        const client = await singleClientService.getById(parsed.data.idClientes);
+        if (!client) throw new Error(`El cliente de id ${parsed.data.idClientes} no existe`);
+        
+        const user = await singleUserService.getById(parsed.data.idUsuarios);
+        if (!user) throw new Error(`El usuario de id ${parsed.data.idUsuarios} no existe`);
+
+        return await this.service.update(id, parsed.data);
     }
 }
 

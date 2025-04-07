@@ -3,7 +3,14 @@ import prismaClient from "./prisma";
 
 class NegotiationService{
     async getAll(){
-        return prismaClient.negociacion.findMany();
+        return prismaClient.negociacion.findMany({
+            include:{
+                usuario: true,
+                cliente: true, 
+                estado: true,
+                productos: true
+            }
+        });
     }
     async getById(negotiationId:number){
         return prismaClient.negociacion.findUnique({

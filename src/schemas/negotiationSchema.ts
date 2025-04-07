@@ -1,7 +1,6 @@
 import {z} from 'zod'
 
 /*
-
 model Negociacion {
   id          Int      @id @default(autoincrement())
   idUsuarios  Int
@@ -19,12 +18,17 @@ model Negociacion {
 }
 */
 
+// No se puede simplemente crear un nuevo usuario si no existe, tal como se hace con las empresas al crear un nuevo usuario o con las fotos de producto.
+// Aquí sí es necesario que tenga los ids de los productos, de los usuarios y de los clientes.
 const negotiationSchema = z.object({
-    comision: z.number(),
     asunto: z.string(),
     fecha: z.date(),
     descripcion: z.string(),
-    total: z.number()
+    comision: z.number(),
+    total: z.number(), 
+    idUsuarios: z.number(),
+    idClientes: z.number(),
+    idEstado: z.number()
 });
 
 export {negotiationSchema};
