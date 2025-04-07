@@ -1,6 +1,8 @@
 import express from 'express'
 import UserHandler from '../handlers/user'
 
-const UserRouter = express.Router();
+const router = express.Router();
 
-UserRouter.post("/", UserHandler.addUser); // Tengo dudas en esto. Porque ya tendremos un authSignup, entonces este endpoint es innecesario
+router.post("/", UserHandler.addUser); // Tengo dudas en esto. Porque ya tendremos un authSignup, entonces este endpoint es innecesario
+
+export default router;
