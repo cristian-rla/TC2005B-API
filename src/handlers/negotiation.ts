@@ -69,6 +69,28 @@ class NegotiationHandler{
             }        
         }
     }
+    async updateManyNegotiations(req:Request, res:Response, next:NextFunction){
+        const updates = req.body;
+        if (!Array.isArray(updates) || updates.some(currElement => !currElement.id || !currElement.data)) {
+            res.status(404).json({message: "La solicitud debe ser un arreglo de tipo [{id:negociacionId,data:dataNegociacion}]"})
+            return;
+        }
+
+        try{
+            const updatedNegotiations = await Promise.all(
+                updates.map(
+                    async (negotiation) =>  negotiationController.updateNegotiation(negotiation.id, negotiation.data)
+                ))
+
+            res.status(200).json({message:"Negociación actualizada correctamente", updatedNegotiations});
+        } catch(error:unknown){
+            if (error instanceof Error) {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(404).json({ message: "No se pudo completar" });
+            }        
+        }
+    }
 }
 
 export default new NegotiationHandler();
