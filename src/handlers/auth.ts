@@ -11,6 +11,7 @@ class AuthHandler{
             if (!await authController.verifyEmail(req.body)){
                 throw (new Error("La cuenta ya existe"))
             }
+            res.status(200).json({message: "Se ha iniciado sesión"})
         } catch(error:unknown){
             if (error instanceof Error) {
                 res.status(404).json({ message: error.message });

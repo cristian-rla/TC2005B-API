@@ -19,7 +19,7 @@ class ClientController{
     async addClient(clientData:unknown){
         // Este safe parse puede ser cambiado a handler layer
         const parsed = ClientSchema.safeParse(clientData);
-        if (!parsed.success){
+        if (!parsed.data){
             throw(new Error("Los datos proporcionados no van acorde al esquema"))
         }
 

@@ -3,13 +3,13 @@ import { NegotiationService } from "../../db/negotiation";
 import { negotiationSchema } from "../../schemas/negotiationSchema";
 
 // Mocks manuales para servicios externos
-jest.mock("../db/client", () => ({
+jest.mock("../../db/client", () => ({
   singleClientService: {
     getById: jest.fn(),
   },
 }));
 
-jest.mock("../db/user", () => ({
+jest.mock("../../db/user", () => ({
   __esModule: true,
   default: {
     getById: jest.fn(),
