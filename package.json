@@ -1,11 +1,11 @@
 {
   "name": "tc2005b-api",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.ts",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodeman src/server.js",
+    "start": "tsx server.ts",
+    "dev": "tsx server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,10 +18,15 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "nodeman": "^1.1.2",
-    "prisma": "^6.5.0"
+    "prisma": "^6.5.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.9"
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.14.0",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

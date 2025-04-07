@@ -1,56 +1,77 @@
 import { Request, Response, NextFunction } from "express";
 import ProductController from "../controllers/product"
 import productService from '../db/product';
+import {z} from 'zod'
 
-const controller = new ProductController(productService);
+const productController = new ProductController(productService);
 
-class CustomerHttpHandler {
+class ProductHttpHandler {
   async getAll(req:Request, res:Response, next:NextFunction) {
     try {
-      const customers = await controller.getAll();
-      res.json(customers);
-    } catch (error) {
-      next(error);
+      const products = await productController.getAll();
+      res.json(products);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
 
-  async getById(req:Request, res:Response, next:NextFunction) {
+  async getProductById(req:Request, res:Response, next:NextFunction){
+    try{
+      const product = await productController.getProductById(Number(req.params.id)); // query params se pasan como strings por defecto. id convertido a numero 
+      res.status(200).json(product);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
+    }
+  }
+  
+  async postProduct(req:Request, res:Response, next:NextFunction){
     try {
-      const customer = await controller.getById(req.params.id);
-      res.json(customer);
-    } catch (error) {
-      next(error);
+      // VALIDACIÓN IMPORTANTE CON ZOD
+      const products = await productController.createProduct(req.body); // IMPORTANTE CHECAR QUE SEA EL TIPO SOLICITADO
+      res.status(201).json(products);
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
 
-  async create(req:Request, res:Response, next:NextFunction) {
-    try {
-      const { name, email } = req.body;
-      const newCustomer = await controller.create(name, email);
-      res.status(201).json(newCustomer);
-    } catch (error) {
-      next(error);
+  async updateProduct(req:Request, res:Response, next:NextFunction){
+    try{
+      // VALIDACIÓN CON ZOD
+      await productController.updateProduct(Number(req.params.id), req.body);
+      res.status(200).json("Se actualizó el producto correctamente");
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
-
-  async update(req:Request, res:Response, next:NextFunction) {
-    try {
-      const { name, email } = req.body;
-      const updatedCustomer = await controller.update(req.params.id, name, email);
-      res.json(updatedCustomer);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async delete(req:Request, res:Response, next:NextFunction) {
-    try {
-      await controller.delete(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
+  
+  async deleteProduct(req:Request, res:Response, next:NextFunction){
+    try{
+      await productController.deleteProduct(Number(req.params.id));
+      res.status(200).json("Se eliminó el producto satisfactoriamente");
+    } catch(error:unknown){
+      if (error instanceof Error) {
+          res.status(404).json({ message: error.message });
+      } else {
+          res.status(404).json({ message: "No se pudo completar" });
+      }        
     }
   }
 }
 
-module.exports = new CustomerHttpHandler();
+export default new ProductHttpHandler();
