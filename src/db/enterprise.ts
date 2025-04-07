@@ -1,6 +1,5 @@
 import prismaClient from "./prisma";
 import { Prisma } from "@prisma/client";
-import {EnterpriseSchemaQuery} from "../schemas/enterpriseSchema";
 
 class EnterpriseService{
     async getAll(){

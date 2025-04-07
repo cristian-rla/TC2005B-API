@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import {ClientService} from "../db/client"
 import { singleEnterpriseService } from "../db/enterprise";
 import { ClientSchema } from "../schemas/clientSchema";

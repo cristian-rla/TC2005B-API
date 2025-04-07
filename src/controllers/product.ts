@@ -43,7 +43,7 @@ class ProductController{
         
         const associatedPicture = await this.service.getProductOfPicture(previousData.id);
         if(associatedPicture && parsed.data.foto){
-            if(Buffer.compare(associatedPicture.foto, parsed.data.foto)){
+            if(Buffer.compare(associatedPicture.foto, parsed.data.foto) !== 0 ){
                 await this.service.updateProductPicture(associatedPicture.idFoto, parsed.data.foto);
             }
         }

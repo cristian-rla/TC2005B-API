@@ -12,16 +12,17 @@ class NegotiationController{
     }
     async getAllNegotiationsBystates(){
         const negotiations = await this.service.getAll();
-        const negotiationsByState:(Prisma.NegociacionUncheckedCreateInput[])[] = [[],[],[],[]];
+        const negotiationsByState:(Prisma.NegociacionUncheckedCreateInput[])[] = [[],[],[],[],[]];
         for(const neg of negotiations){
-            negotiationsByState[neg.idEstado].push(neg);
+            negotiationsByState[neg.idEstado - 1].push(neg);
         }
         return negotiationsByState;
     }
     async getNegotiationById(id:number){
         return await this.service.getById(id);
     }
-    async addNegotiation(negotiationData:Prisma.NegociacionUncheckedCreateInput){
+    async addNegotiation(negotiationData:unknown){
+
         return await this.service.create(negotiationData);
     }
     async deleteNegotiation(id:number){
