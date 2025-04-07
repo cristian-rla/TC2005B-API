@@ -1,9 +1,7 @@
-import { Prisma } from "@prisma/client";
 import { NegotiationService } from "../db/negotiation"
 import { negotiationSchema } from "../schemas/negotiationSchema";
 import { singleClientService } from "../db/client";
 import singleUserService from "../db/user";
-import { PrismaClientUnknownRequestError } from "@prisma/client/runtime/library";
 
 class NegotiationController{
     service:NegotiationService;
