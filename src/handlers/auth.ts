@@ -9,7 +9,7 @@ class AuthHandler{
     async logIn(req:Request, res:Response, next:NextFunction){
         try{
             if (!await authController.verifyEmail(req.body)){
-                throw (new Error("La cuenta ya existe"))
+                throw (new Error("La cuenta no existe"))
             }
             res.status(200).json({message: "Se ha iniciado sesión"})
         } catch(error:unknown){
