@@ -14,7 +14,13 @@ class NegotiationService{
     }
     async getById(negotiationId:number){
         return prismaClient.negociacion.findUnique({
-            where:{id:negotiationId}
+            where:{id:negotiationId},
+            include:{
+                usuario: true,
+                cliente: true, 
+                estado: true,
+                productos: true
+            }
         });
     }
     async create(newProductData:Prisma.NegociacionUncheckedCreateInput){
@@ -32,6 +38,12 @@ class NegotiationService{
             where:{id:negotiationId},
             data:newProductData
         });
+    }
+    async createProductRelations(newRelationsData: Prisma.ProductoNegociacionUncheckedCreateInput){
+
+        return prismaClient.productoNegociacion.create({
+            data:newRelationsData
+        })
     }
 }
 

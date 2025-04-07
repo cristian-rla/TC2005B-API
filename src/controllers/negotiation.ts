@@ -2,6 +2,7 @@ import { NegotiationService } from "../db/negotiation"
 import { negotiationSchema } from "../schemas/negotiationSchema";
 import { singleClientService } from "../db/client";
 import singleUserService from "../db/user";
+import { singleProductService } from "../db/product"
 
 class NegotiationController{
     service:NegotiationService;
@@ -15,7 +16,7 @@ class NegotiationController{
     async getNegotiationById(id:number){
         return await this.service.getById(id);
     }
-    async addNegotiation(negotiationData:unknown){
+    async addNegotiation(negotiationData:unknown, products:any){ // Cambiar a unknown y revisar después
         const parsed = negotiationSchema.safeParse(negotiationData);
         if(!parsed.success) throw new Error("Los datos mandados no cumplen con el schema de negociación")
             
@@ -30,7 +31,14 @@ class NegotiationController{
         const user = await singleUserService.getById(parsed.data.idUsuarios);
         if (!user) throw new Error(`El usuario de id ${parsed.data.idUsuarios} no existe`);
 
-        return await this.service.create(negotiationWithDate);
+        const newNegotiation = await this.service.create(negotiationWithDate);
+
+        const product = await Promise.all(
+            products.map(
+                async (prod:any) =>  this.service.createProductRelations({idNegociacion:newNegotiation.id, idProducto:prod.id, cantidad:prod.cantidad, subtotal:prod.cantidad*prod.precio,})
+            ))
+            
+        return newNegotiation;
     }
     async deleteNegotiation(id:number){
         return await this.service.delete(id);
