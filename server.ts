@@ -4,6 +4,8 @@ import productRouter from "./src/routes/product"
 import negotiationRouter from "./src/routes/negotiation"
 import clientRouter from "./src/routes/client"
 import authRouter from "./src/routes/auth"
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
