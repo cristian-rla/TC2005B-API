@@ -11,9 +11,8 @@ datasource db {
 
 model EmpresaLogo {
   idFoto    Int     @id @default(autoincrement())
-  foto      String  @db.VarChar(Max)
-  empresaId Int     @unique
-  empresa   Empresa @relation("EmpresaToLogo", fields: [empresaId], references: [id])
+  foto      String  @db.VarChar(512)
+  Empresa   Empresa? 
 }
 
 model Empresa {
@@ -21,16 +20,16 @@ model Empresa {
   nombre       String       @db.VarChar(30)
   industria    String?      @db.VarChar(30)
   preferencias String?      @db.VarChar(500)
-  idFoto       Int?
+  idFoto       Int          @unique        
+  EmpresaLogo   EmpresaLogo @relation(fields: [idFoto], references: [idFoto])
   clientes     Cliente[]
-  empresaLogo  EmpresaLogo? @relation("EmpresaToLogo")
 }
 
 model ClienteFoto {
   idFoto    Int     @id @default(autoincrement())
-  foto      String  @db.VarChar(Max)
+  foto      String  @db.VarChar(512)
   clienteId Int     @unique
-  cliente   Cliente @relation("ClienteToLogo", fields: [clienteId], references: [id])
+  Cliente   Cliente?
 }
 
 model Cliente {
@@ -40,8 +39,9 @@ model Cliente {
   idEmpresa     Int
   contrasena    String        @db.VarChar(50)
   telefono      String        @db.VarChar(11)
+  idFoto       Int          @unique        
+  ClienteFoto   ClienteFoto @relation(fields: [idFoto], references: [idFoto])
   empresa       Empresa       @relation(fields: [idEmpresa], references: [id])
-  ClienteFoto   ClienteFoto?  @relation("ClienteToLogo")
   negociaciones Negociacion[]
 }
 
@@ -77,9 +77,8 @@ model Estado {
 
 model ProductoServicioFoto {
   idFoto     Int              @id @default(autoincrement())
-  foto       String           @db.VarChar(Max)
-  productoId Int              @unique
-  producto   ProductoServicio @relation("ProductoServicioFoto", fields: [productoId], references: [id])
+  foto       String           @db.VarChar(512)
+  ProductoServicio   ProductoServicio?
 }
 
 model ProductoServicio {
@@ -87,8 +86,9 @@ model ProductoServicio {
   nombre        String                @db.VarChar(30)
   precio        Float
   stock         Int
+  idFoto       Int          @unique        
+  ProductoServicioFoto   ProductoServicioFoto @relation(fields: [idFoto], references: [idFoto])
   negociaciones ProductoNegociacion[]
-  foto          ProductoServicioFoto? @relation("ProductoServicioFoto")
 }
 
 model ProductoNegociacion {
