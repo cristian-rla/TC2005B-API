@@ -3,7 +3,9 @@ import prismaClient from "./prisma"
 
 class ClientService{
     async getAll(){
-        return await prismaClient.cliente.findMany();
+        return await prismaClient.cliente.findMany({
+            include:{empresa:true}
+        });
     }
     async getById(idClient:number){
         return await prismaClient.cliente.findUnique({

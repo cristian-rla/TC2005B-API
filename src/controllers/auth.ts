@@ -18,10 +18,7 @@ class AuthController{
         this.service.create(userData);
     }
     async verifyEmail(loginData:LoginData){
-        if(!await this.service.verifyLogin(loginData)){
-            throw (new Error("No se encontró el email"))
-        }
-        return true;
+        return await this.service.verifyLogin(loginData);
     }
 }
 

@@ -34,7 +34,7 @@ class NegotiationHandler{
 
     async postNegotiation(req:Request, res:Response, next:NextFunction){
         try{
-            const negotiation = await negotiationController.addNegotiation(req.body);
+            const negotiation = await negotiationController.addNegotiation(req.body.negociacion, req.body.productos);
             res.status(200).json({message:"Negociación agregada correctamente"});
         } catch(error:unknown){
             if (error instanceof Error) {
