@@ -8,7 +8,7 @@
     "dev": "tsx server.tsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "jest":{  
+  "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
   },
@@ -34,6 +34,7 @@
     "nodemon": "^3.1.9",
     "ts-jest": "^29.3.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }
 }
