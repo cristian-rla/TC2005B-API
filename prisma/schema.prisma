@@ -15,10 +15,9 @@ datasource db {
 }
 
 model EmpresaLogo {
-  idFoto   Int   @id @default(autoincrement())
-  foto Bytes
-  empresaId Int  @unique
-  empresa    Empresa @relation("EmpresaToLogo", fields: [empresaId], references: [id])
+  id   Int   @id @default(autoincrement())
+  foto String @db.VarChar(512)
+  empresa    Empresa? @relation("EmpresaToLogo")
 }
 
 model Empresa {
@@ -26,16 +25,15 @@ model Empresa {
   nombre       String   @db.VarChar(30)
   industria    String?   @db.VarChar(30)
   preferencias String?   @db.VarChar(500)
-  idFoto    Int? 
-  empresaLogo  EmpresaLogo? @relation("EmpresaToLogo")
+  idFoto    Int? @unique
+  empresaLogo  EmpresaLogo?  @relation("EmpresaToLogo", fields: [idFoto], references: [id])
   clientes     Cliente[]
 }
 
 model ClienteFoto {
-  idFoto   Int   @id @default(autoincrement())
-  foto Bytes
-  clienteId Int @unique
-  cliente Cliente? @relation("ClienteToLogo", fields: [clienteId], references: [id])
+  id   Int   @id @default(autoincrement())
+  foto String @db.VarChar(512)
+  cliente Cliente? @relation("ClienteToLogo")
 }
 
 model Cliente {
@@ -43,10 +41,10 @@ model Cliente {
   correo    String   @db.VarChar(50)
   nombre    String   @db.VarChar(50)
   telefono  String   @db.VarChar(11)
-  contrasena String  @db.VarChar(50)
   idEmpresa Int     
+  idFoto    Int @unique
   empresa   Empresa @relation(fields: [idEmpresa], references: [id])
-  ClienteFoto   ClienteFoto?   @relation("ClienteToLogo")
+  ClienteFoto   ClienteFoto?   @relation("ClienteToLogo", fields: [idFoto], references: [id])
   negociaciones Negociacion[]
 } 
 
@@ -81,18 +79,18 @@ model Estado {
 }
 
 model ProductoServicioFoto {
-  idFoto   Int   @id @default(autoincrement())
-  foto Bytes
-  productoId Int @unique 
-  producto ProductoServicio? @relation("ProductoServicioFoto", fields:[productoId], references:[id])
+  id   Int   @id @default(autoincrement())
+  foto String @db.VarChar(512)
+  producto ProductoServicio? @relation("ProductoServicioFoto")
 }
 
 model ProductoServicio {
   id     Int    @id @default(autoincrement())
   nombre String @db.VarChar(30)
   precio Float
-  stock Int 
-  foto  ProductoServicioFoto?   @relation("ProductoServicioFoto")
+  stock  Int 
+  idFoto Int @unique
+  foto  ProductoServicioFoto?   @relation("ProductoServicioFoto", fields:[idFoto], references:[id])
   negociaciones ProductoNegociacion[]
 }
 

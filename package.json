@@ -1,11 +1,12 @@
 {
   "name": "tc2005b-api",
   "version": "1.0.0",
-  "main": "server.tsx",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "tsx server.tsx",
-    "dev": "tsx server.tsx",
+    "start": "node dist/server.js",
+    "dev": "node dist/server.js",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "jest": {
