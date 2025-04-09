@@ -19,7 +19,7 @@ class ProductService {
       });
     }
 
-    async addPicture(productId:number, photo:Buffer){
+    async addPicture(productId:number, photo:string){
       return await prismaClient.productoServicioFoto.create({
         data:{productoId:productId, foto:photo}
       });
@@ -43,7 +43,7 @@ class ProductService {
       })
     }
 
-    async updateProductPicture(pictureId:number, newPhoto:Buffer){
+    async updateProductPicture(pictureId:number, newPhoto:string){
       return await prismaClient.productoServicioFoto.update({
         where:{idFoto:pictureId},
         data:{foto:newPhoto}

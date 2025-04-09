@@ -1,98 +1,92 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
 }
 
 datasource db {
-  provider = "sqlserver"
-  url      = env("DATABASE_URL")
+  provider          = "sqlserver"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model EmpresaLogo {
-  idFoto   Int   @id @default(autoincrement())
-  foto Bytes
-  empresaId Int  @unique
-  empresa    Empresa @relation("EmpresaToLogo", fields: [empresaId], references: [id])
+  idFoto    Int     @id @default(autoincrement())
+  foto      String  @db.VarChar(512)
+  Empresa   Empresa? 
 }
 
 model Empresa {
-  id           Int      @id @default(autoincrement())
-  nombre       String   @db.VarChar(30)
-  industria    String?   @db.VarChar(30)
-  preferencias String?   @db.VarChar(500)
-  idFoto    Int? 
-  empresaLogo  EmpresaLogo? @relation("EmpresaToLogo")
+  id           Int          @id @default(autoincrement())
+  nombre       String       @db.VarChar(30)
+  industria    String?      @db.VarChar(30)
+  preferencias String?      @db.VarChar(500)
+  idFoto       Int          @unique        
+  EmpresaLogo   EmpresaLogo @relation(fields: [idFoto], references: [idFoto])
   clientes     Cliente[]
 }
 
 model ClienteFoto {
-  idFoto   Int   @id @default(autoincrement())
-  foto Bytes
-  clienteId Int @unique
-  cliente Cliente? @relation("ClienteToLogo", fields: [clienteId], references: [id])
+  idFoto    Int     @id @default(autoincrement())
+  foto      String  @db.VarChar(512)
+  clienteId Int     @unique
+  Cliente   Cliente?
 }
 
 model Cliente {
-  id        Int      @id @default(autoincrement())
-  correo    String   @db.VarChar(50)
-  nombre    String   @db.VarChar(50)
-  telefono  String   @db.VarChar(11)
-  contrasena String  @db.VarChar(50)
-  idEmpresa Int     
-  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
-  ClienteFoto   ClienteFoto?   @relation("ClienteToLogo")
+  id            Int           @id @default(autoincrement())
+  correo        String        @db.VarChar(50)
+  nombre        String        @db.VarChar(50)
+  idEmpresa     Int
+  telefono      String        @db.VarChar(11)
+  idFoto       Int          @unique        
+  ClienteFoto   ClienteFoto @relation(fields: [idFoto], references: [idFoto])
+  empresa       Empresa       @relation(fields: [idEmpresa], references: [id])
   negociaciones Negociacion[]
-} 
+}
 
 model Usuario {
-  id        Int      @id @default(autoincrement())
-  nombre    String   @db.VarChar(50)
-  email     String   @unique @db.VarChar(50)
-  contrasena String   @db.VarChar(512)
+  id            Int           @id @default(autoincrement())
+  nombre        String        @db.VarChar(50)
+  email         String        @unique @db.VarChar(50)
+  contrasena    String        @db.VarChar(512)
   negociaciones Negociacion[]
 }
 
 model Negociacion {
-  id          Int      @id @default(autoincrement())
+  id          Int                   @id @default(autoincrement())
   idUsuarios  Int
   idClientes  Int
   idEstado    Int
   fecha       DateTime
-  asunto      String   @db.VarChar(50)
-  descripcion String   @db.VarChar(500)
+  asunto      String                @db.VarChar(50)
+  descripcion String                @db.VarChar(500)
   comision    Float
   total       Float
-  usuario     Usuario  @relation(fields: [idUsuarios], references: [id])
-  cliente     Cliente  @relation(fields: [idClientes], references: [id])
-  estado      Estado   @relation(fields: [idEstado], references: [id])
+  cliente     Cliente               @relation(fields: [idClientes], references: [id])
+  estado      Estado                @relation(fields: [idEstado], references: [id])
+  usuario     Usuario               @relation(fields: [idUsuarios], references: [id])
   productos   ProductoNegociacion[]
 }
 
 model Estado {
-  id     Int    @id @default(autoincrement())
-  estado String @db.VarChar(20)
+  id            Int           @id @default(autoincrement())
+  estado        String        @db.VarChar(20)
   negociaciones Negociacion[]
 }
 
 model ProductoServicioFoto {
-  idFoto   Int   @id @default(autoincrement())
-  foto Bytes
-  productoId Int @unique 
-  producto ProductoServicio? @relation("ProductoServicioFoto", fields:[productoId], references:[id])
+  idFoto     Int              @id @default(autoincrement())
+  foto       String           @db.VarChar(512)
+  ProductoServicio   ProductoServicio?
 }
 
 model ProductoServicio {
-  id     Int    @id @default(autoincrement())
-  nombre String @db.VarChar(30)
-  precio Float
-  stock Int 
-  foto  ProductoServicioFoto?   @relation("ProductoServicioFoto")
+  id            Int                   @id @default(autoincrement())
+  nombre        String                @db.VarChar(30)
+  precio        Float
+  stock         Int
+  idFoto       Int          @unique        
+  ProductoServicioFoto   ProductoServicioFoto @relation(fields: [idFoto], references: [idFoto])
   negociaciones ProductoNegociacion[]
 }
 
@@ -101,8 +95,8 @@ model ProductoNegociacion {
   idNegociacion Int
   cantidad      Int
   subtotal      Float
-  producto      ProductoServicio @relation(fields: [idProducto], references: [id])
   negociacion   Negociacion      @relation(fields: [idNegociacion], references: [id])
-  
-  @@id([idProducto, idNegociacion]) 
+  producto      ProductoServicio @relation(fields: [idProducto], references: [id])
+
+  @@id([idProducto, idNegociacion])
 }

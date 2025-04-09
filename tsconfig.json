@@ -8,8 +8,7 @@
     "strict": true,                         // Modo estricto para errores y advertencias
     "skipLibCheck": true,                   // Omite la verificación de bibliotecas
     "resolveJsonModule": true,              // Permite importar JSON
-    "noEmit": true,                         // No emite archivos JavaScript, sólo transpila
-    "allowImportingTsExtensions": true      // Permite importar archivos .ts directamente
+    "outDir":"dist"
   },
   "ts-node": {
     "experimentalSpecifierResolution": "node",
