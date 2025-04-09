@@ -1,11 +1,11 @@
 {
   "name": "tc2005b-api",
   "version": "1.0.0",
-  "main": "server.ts",
+  "main": "server.tsx",
   "type": "module",
   "scripts": {
-    "start": "tsx server.ts",
-    "dev": "tsx server.ts",
+    "start": "tsx server.tsx",
+    "dev": "tsx server.tsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "jest":{  
