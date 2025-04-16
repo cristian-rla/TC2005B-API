@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import ProductController from "../controllers/product"
 import productService from '../db/product';
-import {z} from 'zod'
+import negotiation from "./negotiation";
+import { productSchema, createProductSchema } from "../schemas/productSchema";
 
 const productController = new ProductController(productService);
 
@@ -34,9 +35,14 @@ class ProductHttpHandler {
   
   async postProduct(req:Request, res:Response, next:NextFunction){
     try {
-      // VALIDACIÓN IMPORTANTE CON ZOD
-      const products = await productController.createProduct(req.body); // IMPORTANTE CHECAR QUE SEA EL TIPO SOLICITADO
+      const parsed = createProductSchema.safeParse(req.body);
+      if(!parsed.success){
+        res.status(500).json({message:"Los datos no van acorde al schema", errors:parsed.error.errors});
+        return;
+    }
+      const products = await productController.createProduct(req.body);
       res.status(201).json(products);
+      
     } catch(error:unknown){
       if (error instanceof Error) {
           res.status(404).json({ message: error.message });
@@ -48,8 +54,13 @@ class ProductHttpHandler {
 
   async updateProduct(req:Request, res:Response, next:NextFunction){
     try{
-      // VALIDACIÓN CON ZOD
-      await productController.updateProduct(Number(req.params.id), req.body);
+      const parsed = createProductSchema.safeParse(req.body);
+
+      if(!parsed.success){
+        res.status(500).json({message:"Los datos no van acorde al schema", errors:parsed.error.errors});
+        return;
+    }
+      await productController.updateProduct(Number(req.params.id), parsed.data);
       res.status(200).json("Se actualizó el producto correctamente");
     } catch(error:unknown){
       if (error instanceof Error) {

@@ -20,15 +20,14 @@ model Empresa {
   nombre       String       @db.VarChar(30)
   industria    String?      @db.VarChar(30)
   preferencias String?      @db.VarChar(500)
-  idFoto       Int          @unique        
-  EmpresaLogo   EmpresaLogo @relation(fields: [idFoto], references: [idFoto])
+  idFoto       Int?          @unique        
+  EmpresaLogo  EmpresaLogo? @relation(fields: [idFoto], references: [idFoto])
   clientes     Cliente[]
 }
 
 model ClienteFoto {
   idFoto    Int     @id @default(autoincrement())
   foto      String  @db.VarChar(512)
-  clienteId Int     @unique
   Cliente   Cliente?
 }
 
@@ -38,8 +37,8 @@ model Cliente {
   nombre        String        @db.VarChar(50)
   idEmpresa     Int
   telefono      String        @db.VarChar(11)
-  idFoto       Int          @unique        
-  ClienteFoto   ClienteFoto @relation(fields: [idFoto], references: [idFoto])
+  idFoto        Int?          @unique        
+  ClienteFoto   ClienteFoto?  @relation(fields: [idFoto], references: [idFoto])
   empresa       Empresa       @relation(fields: [idEmpresa], references: [id])
   negociaciones Negociacion[]
 }
@@ -85,8 +84,8 @@ model ProductoServicio {
   nombre        String                @db.VarChar(30)
   precio        Float
   stock         Int
-  idFoto       Int          @unique        
-  ProductoServicioFoto   ProductoServicioFoto @relation(fields: [idFoto], references: [idFoto])
+  idFoto        Int?          @unique        
+  ProductoServicioFoto   ProductoServicioFoto? @relation(fields: [idFoto], references: [idFoto])
   negociaciones ProductoNegociacion[]
 }
 

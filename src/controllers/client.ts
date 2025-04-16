@@ -1,6 +1,9 @@
-import {ClientService} from "../db/client"
+import { z } from "zod";
+import { ClientService } from "../db/client"
 import { singleEnterpriseService } from "../db/enterprise";
-import { ClientSchema } from "../schemas/clientSchema";
+import { clientSchema } from "../schemas/clientSchema";
+
+type Client = z.infer<typeof clientSchema>;
 
 class ClientController{
     service:ClientService;
@@ -16,33 +19,22 @@ class ClientController{
         return await this.service.getById(id);
     }
 
-    async addClient(clientData:unknown){
-        // Este safe parse puede ser cambiado a handler layer
-        const parsed = ClientSchema.safeParse(clientData);
-        if (!parsed.data){
-            throw(new Error("Los datos proporcionados no van acorde al esquema"))
-        }
-
-        if(await this.service.getByEmail(parsed.data.correo)){
+    async addClient(clientData:Client){
+        if(await this.service.getByEmail(clientData.correo)){
             throw(new Error("Ya hay un cliente asociado a esta cuenta"));
         }
 
-        const {empresa, ...newClientData} = parsed.data;
+        const {empresa, ...newClientData} = clientData;
 
         let enterpriseData = await singleEnterpriseService.getByName(empresa);
         if(!enterpriseData){
-            enterpriseData = await singleEnterpriseService.create({nombre:empresa});
+            throw new Error("No existe tal empresa");
         }
 
         return await this.service.create({idEmpresa:enterpriseData.id, ...newClientData});
     }
 
-    async updateClient(id:number, clientData:unknown){
-        const parsed = ClientSchema.safeParse(clientData);
-        if(!parsed.success){
-            throw (new Error("Los datos proporcionados no van acorde al schema"));
-        }
-
+    async updateClient(id:number, clientData:Client){
         const currentClient = await this.service.getById(id);
         if(!currentClient){
             throw(new Error("No hay cliente asociado a este id"));
@@ -50,10 +42,10 @@ class ClientController{
 
         let enterpriseData = await singleEnterpriseService.getById(currentClient.idEmpresa);
         if(!enterpriseData){
-            enterpriseData = await singleEnterpriseService.create({nombre:parsed.data.empresa});
+            enterpriseData = await singleEnterpriseService.create({nombre:clientData.empresa});
         }
 
-        return await this.service.update(id, {idEmpresa:enterpriseData.id, ...parsed.data});
+        return await this.service.update(id, {idEmpresa:enterpriseData.id, ...clientData});
     }
 
     async deleteClient(id:number){

@@ -1,6 +1,9 @@
-import { Prisma } from "@prisma/client";
-import {ProductService} from "../db/product" 
-import { productSchema } from "../schemas/productSchema";
+import { ProductService } from "../db/product" 
+import { createProductSchema, productSchema } from "../schemas/productSchema";
+import { z } from "zod";
+
+type Product = z.infer<typeof productSchema>; // Mover a los schemas estos z.infer
+type CreateProduct = z.infer<typeof createProductSchema>;
 
 class ProductController{
     service:ProductService;
@@ -10,45 +13,34 @@ class ProductController{
     async getAll(){
         return await this.service.getAllProducts();
     }
-    async createProduct(nuevoProducto:unknown){
-        const parsed = productSchema.safeParse(nuevoProducto);
+    async createProduct(productData:CreateProduct){
+        const parsed = productSchema.safeParse(productData);
         if(!parsed.success){
             throw(new Error("Los datos no coinciden con el schema"));
         }
-        
-        const {foto, ...productData} = parsed.data;
-        const newProduct = await this.service.createProduct(productData);
-        if(foto){
-            this.service.addPicture(newProduct.id, foto);
-        }
-
-        return newProduct;
+        return await this.service.createProduct(parsed.data);
     }
 
     async getProductById(id:number){
         return await this.service.getById(id);
     }
 
-    async updateProduct(id:number, productData:unknown){
+    async updateProduct(id:number, productData:CreateProduct){
         // Checar caso en el que los datos son exactamente iguales.
-        const parsed = productSchema.safeParse(productData);
-        if(!parsed.success){
-            throw (new Error("Los datos no coinciden con el schema"));
-        }
 
         const previousData = await this.service.getById(id);
         if(previousData === null){
             throw new Error("La id no tiene ningún producto asociado");
         }
-        
-        const associatedPicture = await this.service.getProductOfPicture(previousData.id);
-        if(associatedPicture && parsed.data.foto){
-            if(associatedPicture.foto === parsed.data.foto){
-                await this.service.updateProductPicture(associatedPicture.idFoto, parsed.data.foto);
+        if (productData.foto){ // Este condicional es necesario porque puede ser null, y getPictureById no acepta valores nulos. Arroja error
+            if(previousData.idFoto !== null){
+                await this.service.deleteProductPicture(previousData.idFoto);
             }
+            const newPicture = await this.service.createPicture(productData.foto);
+            return await this.service.updateProduct(id, {...productData, idFoto:newPicture.idFoto});
         }
         
-        const {foto, ...newDataWithoutPicture} = parsed.data;
+        const {foto, ...newDataWithoutPicture} = productData;
         return await this.service.updateProduct(id, newDataWithoutPicture);
     }
 
