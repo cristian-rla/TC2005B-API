@@ -2,7 +2,7 @@
   "name": "tc2005b-api",
   "version": "1.0.0",
   "main": "server.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "node dist/server.js",
