@@ -1,3 +1,7 @@
+/*
+Los tipos de datos, aunque sea conveniente obtenerlos de Prisma, es pertinente especificarlos en los schemas.
+
+*/
 import { Prisma } from "@prisma/client";
 import {AuthService} from "../db/auth"
 

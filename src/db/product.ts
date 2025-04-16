@@ -1,14 +1,21 @@
 import { Prisma } from "@prisma/client";
 import prismaClient from "./prisma";
+import { z } from "zod";
+import { productSchema, createProductSchema } from "../schemas/productSchema";
 
+type createProduct = z.infer<typeof createProductSchema>
 class ProductService {
     async getAllProducts() {
       return await prismaClient.productoServicio.findMany();
     }
 
-    async createProduct(productData: Prisma.ProductoServicioUncheckedCreateInput){
+    async createProduct(productData: createProduct){
+      const {foto, ...product} = productData;
       const newProduct = await prismaClient.productoServicio.create({
-        data: productData
+        data: {
+          ...product, ProductoServicioFoto : (foto ? {create:{foto}} : undefined)
+        }
+        
       });
       return newProduct;
     }
@@ -18,23 +25,18 @@ class ProductService {
         where:{id:productId}
       });
     }
-
-    async addPicture(productId:number, photo:string){
+    
+    // Tengo dudas aquí, creo que photo se pasa el string, pero foto es la relación, entonces se tiene que corregir esto.
+    async createPicture(photo:string){
       return await prismaClient.productoServicioFoto.create({
-        data:{productoId:productId, foto:photo}
+        data:{foto:photo}
       });
     }
-
+    
     async getPictureById(pictureId:number){ // No creo que esta función contribuya, no tenemos el id de las imágenes fuera de estas. 
       return await prismaClient.productoServicioFoto.findFirst({
         where:{idFoto:pictureId}
       });
-    }
-
-    async getProductOfPicture(productId:number){
-      return await prismaClient.productoServicioFoto.findFirst({
-        where:{productoId:productId}
-      })
     }
 
     async deleteProductPicture(pictureId:number){
@@ -43,14 +45,14 @@ class ProductService {
       })
     }
 
-    async updateProductPicture(pictureId:number, newPhoto:string){
+    async updatePicture(pictureId:number, newPhoto:string){ // CHECAR. PUEDE UNIRSE A UPDATE PRODUCT
       return await prismaClient.productoServicioFoto.update({
         where:{idFoto:pictureId},
         data:{foto:newPhoto}
       })
     }
 
-    async updateProduct(productId:number, newProductData:Prisma.ProductoServicioUncheckedUpdateInput){
+    async updateProduct(productId:number, newProductData:Prisma.ProductoServicioUncheckedCreateInput){
       return await prismaClient.productoServicio.update({
         where:{id:productId},
         data:newProductData
