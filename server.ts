@@ -16,6 +16,8 @@ app.use("/api/cliente", clientRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/usuario", userRouter);
 
-// app.listen(3001, () => console.log("Server running on http://localhost:3001"));
+const PORT = process.env.PORT || 8080;
 
-export default app;
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
+});
