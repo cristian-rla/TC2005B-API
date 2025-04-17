@@ -16,6 +16,8 @@ app.use("/api/cliente", clientRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/usuario", userRouter);
 
-app.listen(8080);
+const PORT = process.env.PORT || 8080;
 
-export default app;
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
+});
