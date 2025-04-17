@@ -13,34 +13,38 @@ class ProductController{
     async getAll(){
         return await this.service.getAllProducts();
     }
-    async createProduct(productData:CreateProduct){
-        const parsed = productSchema.safeParse(productData);
-        if(!parsed.success){
+    async createProduct(sentProductData:unknown){
+        const productData = productSchema.safeParse(sentProductData);
+        if(!productData.success){
             throw(new Error("Los datos no coinciden con el schema"));
         }
-        return await this.service.createProduct(parsed.data);
+        return await this.service.createProduct(productData.data);
     }
 
     async getProductById(id:number){
         return await this.service.getById(id);
     }
 
-    async updateProduct(id:number, productData:CreateProduct){
+    async updateProduct(id:number, sentProductData:CreateProduct){
+        const productData = productSchema.safeParse(sentProductData);
+        if(!productData.success){
+            throw(new Error("Los datos no coinciden con el schema"));
+        }
         // Checar caso en el que los datos son exactamente iguales.
 
         const previousData = await this.service.getById(id);
         if(previousData === null){
             throw new Error("La id no tiene ningún producto asociado");
         }
-        if (productData.foto){ // Este condicional es necesario porque puede ser null, y getPictureById no acepta valores nulos. Arroja error
+        if (productData.data.foto){ // Este condicional es necesario porque puede ser null, y getPictureById no acepta valores nulos. Arroja error
             if(previousData.idFoto !== null){
                 await this.service.deleteProductPicture(previousData.idFoto);
             }
-            const newPicture = await this.service.createPicture(productData.foto);
-            return await this.service.updateProduct(id, {...productData, idFoto:newPicture.idFoto});
+            const newPicture = await this.service.createPicture(productData.data.foto);
+            return await this.service.updateProduct(id, {...sentProductData, idFoto:newPicture.idFoto});
         }
-        
-        const {foto, ...newDataWithoutPicture} = productData;
+
+        const {foto, ...newDataWithoutPicture} = sentProductData;
         return await this.service.updateProduct(id, newDataWithoutPicture);
     }
 

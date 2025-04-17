@@ -9,11 +9,15 @@ class UserController{
     constructor(service:UserService){
         this.service = service;
     }
-    async createUser(userData:User){
-        if(await this.service.findEmail(userData.email)){
+    async createUser(sentUserData:unknown){
+        const parsed = userSchema.safeParse(sentUserData);
+        if (!parsed.success)
+            throw new Error ("Los datos no cumplen con el schema");
+
+        if(await this.service.findEmail(parsed.data.email)){
             throw(new Error("Email already has an associated account"));
         }
-        this.service.createUser(userData);
+        this.service.createUser(parsed.data);
     }
 }
 

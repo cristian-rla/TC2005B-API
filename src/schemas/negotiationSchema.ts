@@ -22,7 +22,7 @@ model Negociacion {
 // Aquí sí es necesario que tenga los ids de los productos, de los usuarios y de los clientes.
 const negotiationSchema = z.object({
     asunto: z.string(),
-    fecha: z.string(), // En el controlador se cambiará a date
+    fecha: z.date(), 
     descripcion: z.string(),
     comision: z.number(),
     total: z.number(), 

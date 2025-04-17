@@ -35,11 +35,6 @@ class ProductHttpHandler {
   
   async postProduct(req:Request, res:Response, next:NextFunction){
     try {
-      const parsed = createProductSchema.safeParse(req.body);
-      if(!parsed.success){
-        res.status(500).json({message:"Los datos no van acorde al schema", errors:parsed.error.errors});
-        return;
-    }
       const products = await productController.createProduct(req.body);
       res.status(201).json(products);
       
@@ -54,13 +49,8 @@ class ProductHttpHandler {
 
   async updateProduct(req:Request, res:Response, next:NextFunction){
     try{
-      const parsed = createProductSchema.safeParse(req.body);
 
-      if(!parsed.success){
-        res.status(500).json({message:"Los datos no van acorde al schema", errors:parsed.error.errors});
-        return;
-    }
-      await productController.updateProduct(Number(req.params.id), parsed.data);
+      await productController.updateProduct(Number(req.params.id), req.body);
       res.status(200).json("Se actualizó el producto correctamente");
     } catch(error:unknown){
       if (error instanceof Error) {

@@ -32,14 +32,6 @@ class ClientHandler{
     }
     async postClient(req:Request, res:Response, next:NextFunction){
         try{
-            const parsed = clientSchema.safeParse(req.body);
-            if (!parsed.success){  
-                res.status(500).json({
-                    message: "Los datos no cumplen con el schema", 
-                    errors: parsed.error.errors
-                    });
-                return;
-            }
             const client = await clientController.addClient(req.body);
             res.status(200).json({ message:"El cliente fue agregado exitosamente", client});
         } catch(error:unknown){
@@ -52,15 +44,7 @@ class ClientHandler{
     }
     async putClient(req:Request, res:Response, next:NextFunction){
         try{
-            const parsed = clientSchema.safeParse(req.body);
-            if (!parsed.success){  
-                res.status(500).json({
-                    message: "Los datos no cumplen con el schema", 
-                    errors: parsed.error.errors
-                    });
-                return;
-            }
-            const client = await clientController.updateClient(Number(req.params.id), parsed.data);
+            const client = await clientController.updateClient(Number(req.params.id), req.body);
             res.status(200).json({ message:"El cliente fue actualizado exitosamente"});
         } catch(error:unknown){
             if (error instanceof Error) {

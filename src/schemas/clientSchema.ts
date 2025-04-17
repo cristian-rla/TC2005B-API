@@ -5,7 +5,7 @@ const clientSchema = z.object({
     nombre: z.string().min(1),
     telefono: z.string().min(7).max(12),
     contrasena:z.string().min(6),
-    empresa:z.string().min(1)
+    idEmpresa:z.number().min(1)
 });
 
 const clientSchemaQuery = clientSchema.partial();

@@ -21,20 +21,18 @@ class NegotiationController{
     async getNegotiationById(id:number){
         return await this.service.getById(id);
     }
-    async addNegotiation(negotiationData:Negotiation, products:{cantidad:number, productData:Product}[]){ // Puedo utilizar z.array aquí.
+    async addNegotiation(sentNegotiationData:unknown, products:{cantidad:number, productData:Product}[]){ // Puedo utilizar z.array aquí.
+        const negotiationData = negotiationSchema.safeParse(sentNegotiationData);
+        if (!negotiationData.success)
+            throw new Error("Los datos no van acorde al schema");
 
-        const negotiationWithDate = {
-        ...negotiationData,
-        fecha: new Date(negotiationData.fecha),
-        };
-                    
-        const client = await singleClientService.getById(negotiationData.idClientes);
-        if (!client) throw new Error(`El cliente de id ${negotiationData.idClientes} no existe`);
+        const client = await singleClientService.getById(negotiationData.data.idClientes);
+        if (!client) throw new Error(`El cliente de id ${negotiationData.data.idClientes} no existe`);
         
-        const user = await singleUserService.getById(negotiationData.idUsuarios);
-        if (!user) throw new Error(`El usuario de id ${negotiationData.idUsuarios} no existe`);
+        const user = await singleUserService.getById(negotiationData.data.idUsuarios);
+        if (!user) throw new Error(`El usuario de id ${negotiationData.data.idUsuarios} no existe`);
 
-        const newNegotiation = await this.service.create(negotiationWithDate);
+        const newNegotiation = await this.service.create(negotiationData.data);
 
         const product = await Promise.all(
             products.map(
@@ -46,19 +44,18 @@ class NegotiationController{
     async deleteNegotiation(id:number){
         return await this.service.delete(id);
     }
-    async updateNegotiation(id:number, negotiationData:Negotiation){
-        const negotiationWithDate = {
-            ...negotiationData,
-            fecha: new Date(negotiationData.fecha),
-        };
-                    
-        const client = await singleClientService.getById(negotiationData.idClientes);
-        if (!client) throw new Error(`El cliente de id ${negotiationData.idClientes} no existe`);
-        
-        const user = await singleUserService.getById(negotiationData.idUsuarios);
-        if (!user) throw new Error(`El usuario de id ${negotiationData.idUsuarios} no existe`);
+    async updateNegotiation(id:number, sentNegotiationData:unknown){  
+        const negotiationData = negotiationSchema.safeParse(sentNegotiationData);
+        if(!negotiationData.success)
+            throw new Error("Los datos no van acorde al schema");
 
-        return await this.service.update(id, negotiationWithDate);
+        const client = await singleClientService.getById(negotiationData.data.idClientes);
+        if (!client) throw new Error(`El cliente de id ${negotiationData.data.idClientes} no existe`);
+        
+        const user = await singleUserService.getById(negotiationData.data.idUsuarios);
+        if (!user) throw new Error(`El usuario de id ${negotiationData.data.idUsuarios} no existe`);
+
+        return await this.service.update(id, negotiationData.data);
     }
 }
 
