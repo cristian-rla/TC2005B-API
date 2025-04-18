@@ -25,7 +25,7 @@ const productDTOSchema = z.object({
     nombre:z.string().min(1),
     precio:z.number(),
     stock:z.number(),
-    productoImagen:image // ESTE NOMBRE CAMBIA DEPENDIENDO DEL ELEMENTO HTML QUE LO MANDA
+    productoImagen:image.optional() // ESTE NOMBRE CAMBIA DEPENDIENDO DEL ELEMENTO HTML QUE LO MANDA
 })
 
 const productSchema = createProductSchema.extend({
@@ -34,4 +34,4 @@ const productSchema = createProductSchema.extend({
 
 const updateProductSchema = productSchema.partial();
 
-export {productSchema, updateProductSchema, productDTOSchema, createProductSchema};
+export {productSchema, updateProductSchema, productDTOSchema, createProductSchema, image};

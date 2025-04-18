@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import ProductController from "../controllers/product"
 import productService from '../db/product';
-import negotiation from "./negotiation";
-import { productSchema, createProductSchema } from "../schemas/productSchema";
-import {Fields, Files, IncomingForm} from "formidable";
+import {Fields, Files, IncomingForm, File} from "formidable";
 
 const productController = new ProductController(productService);
+
 
 class ProductHttpHandler {
   async getAll(req:Request, res:Response, next:NextFunction) {
@@ -44,8 +43,30 @@ class ProductHttpHandler {
           return;   
         }
 
-        const products = await productController.createProduct({...fields, files});
-        res.status(201).json(products);
+        const file : File | undefined = Array.isArray(files.productoImagen) // File ya tiene los datos que necesito en el image schema
+        ? files.productoImagen[0] // Si es un array, toma el primer elemento
+        : files.productoImagen; // Si no es un array, usa el archivo directamente
+
+        let productoImagen;
+        if (!file || Object.keys(file).length === 0) { // Checar si el objeto está vacío
+          productoImagen= undefined;
+        } else{
+          productoImagen ={
+              originalFilename: file.originalFilename ?? "default.jpg",
+              filepath: file.filepath,
+              mimetype: file.mimetype ?? "application/octet-stream",
+              size: file.size,
+              newFilename: file.newFilename,
+            };
+        }
+
+        const product = await productController.createProduct({
+          nombre: String(fields["nombre"]),
+          precio: Number(fields["precio"]),
+          stock: Number(fields["stock"]),
+          productoImagen
+        });
+        res.status(201).json(product);
 
       });
       

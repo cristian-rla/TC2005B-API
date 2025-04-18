@@ -72,22 +72,22 @@ model Estado {
   estado        String        @db.VarChar(20)
   negociaciones Negociacion[]
 }
-
 model ProductoServicioFoto {
-  idFoto     Int              @id @default(autoincrement())
-  foto       String           @db.VarChar(512)
-  ProductoServicio   ProductoServicio?
+  idFoto               Int                   @id @default(autoincrement())
+  foto                 String                @db.VarChar(512)
+  ProductoServicios    ProductoServicio[]    @relation("ProductoFoto") // Ahora permite varios productos
 }
 
 model ProductoServicio {
-  id            Int                   @id @default(autoincrement())
-  nombre        String                @db.VarChar(30)
-  precio        Float
-  stock         Int
-  idFoto        Int?          @unique        
-  ProductoServicioFoto   ProductoServicioFoto? @relation(fields: [idFoto], references: [idFoto])
-  negociaciones ProductoNegociacion[]
+  id                    Int                    @id @default(autoincrement())
+  nombre                String                 @db.VarChar(30)
+  precio                Float
+  stock                 Int
+  idFoto                Int?                   // Ahora no es único
+  ProductoServicioFoto  ProductoServicioFoto?  @relation("ProductoFoto", fields: [idFoto], references: [idFoto])
+  negociaciones         ProductoNegociacion[]
 }
+
 
 model ProductoNegociacion {
   idProducto    Int
