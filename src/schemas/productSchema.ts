@@ -3,16 +3,7 @@
 
 import {z} from 'zod'
 
-// ESte asume que así le llegan los datos desde el frontend, un producto con un link. 
-// Pero esto no se puede tener en al capa de DB, porque aquí el producto necesita tener un idFoto, al menos opcional.
-const createProductSchema = z.object({
-    nombre:z.string().min(1),
-    precio:z.number(),
-    stock:z.number(),
-    idFoto:z.number().optional()
-})
-
-
+// Este tipo es el que llega desde el request
 const image = z.object({    
     originalFilename: z.string().optional(),
     filepath: z.string(),
@@ -28,10 +19,22 @@ const productDTOSchema = z.object({
     productoImagen:image.optional() // ESTE NOMBRE CAMBIA DEPENDIENDO DEL ELEMENTO HTML QUE LO MANDA
 })
 
+// Esto se manda a la base de datos
+const createProductSchema = z.object({
+    nombre:z.string().min(1),
+    precio:z.number(),
+    stock:z.number(),
+    idFoto:z.number().optional()
+})
+
+
 const productSchema = createProductSchema.extend({
     id:z.number()
 });
 
-const updateProductSchema = productSchema.partial();
+// Ahora, aparte de que cualquier dato puede o puede no estar, como se tiene el producto desde el frontend, también son accesibles los idFotos si es que tienen una, atributo faltante en el productDTOSchema
+const updateProductSchema = productDTOSchema.extend({
+    idFoto:z.number().optional()
+}).partial();
 
 export {productSchema, updateProductSchema, productDTOSchema, createProductSchema, image};
