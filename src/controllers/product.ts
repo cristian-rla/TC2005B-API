@@ -1,6 +1,6 @@
 import { ProductService } from "../db/product" 
 import { createProductSchema, productDTOSchema, updateProductSchema } from "../schemas/productSchema";
-import AWS, { PutObjectCommand } from "@aws-sdk/client-s3"
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid';
 import {singleProductService} from "../db/product"
@@ -8,7 +8,7 @@ import { z } from "zod";
 
 type CreateProduct = z.infer<typeof createProductSchema>;
 
-const s3 = new AWS.S3({
+const s3 = new S3Client({
     region:process.env.S3_REGION,
     credentials:{
         accessKeyId:process.env.S3_ACCESS_KEY!,

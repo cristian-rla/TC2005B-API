@@ -4,16 +4,6 @@ import productService from '../db/product';
 import negotiation from "./negotiation";
 import { productSchema, createProductSchema } from "../schemas/productSchema";
 import {Fields, Files, IncomingForm} from "formidable";
-import AWS from "@aws-sdk/client-s3"
-
-const s3 = new AWS.S3({
-  region:"us-east-2",
-  credentials:{
-      accessKeyId:process.env.S3_ACCESS_KEY!,
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!
-  }
-});
-
 
 const productController = new ProductController(productService);
 
@@ -53,7 +43,7 @@ class ProductHttpHandler {
           res.status(500).json({message:err});
           return;   
         }
-        
+
         const products = await productController.createProduct({...fields, files});
         res.status(201).json(products);
 
