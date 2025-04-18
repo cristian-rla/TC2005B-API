@@ -1,21 +1,24 @@
 import { Prisma } from "@prisma/client";
 import prismaClient from "./prisma";
 import { z } from "zod";
-import { productSchema, createProductSchema } from "../schemas/productSchema";
+import { productSchema, createProductSchema, updateProductSchema } from "../schemas/productSchema";
 
-type createProduct = z.infer<typeof createProductSchema>
+type CreateProduct = z.infer<typeof createProductSchema>;
+type UpdateProduct = z.infer<typeof updateProductSchema>
 class ProductService {
     async getAllProducts() {
       return await prismaClient.productoServicio.findMany();
     }
 
-    async createProduct(productData: createProduct){
-      const {foto, ...product} = productData;
+    async createProduct(productData: CreateProduct){
+      const {idFoto, ...product} = productData;
+
+      const data : Prisma.ProductoServicioCreateInput = {
+        ...product, ...(idFoto ? {ProductoServicioFoto:{connect:{idFoto:idFoto}}}:{})
+      };
+
       const newProduct = await prismaClient.productoServicio.create({
-        data: {
-          ...product, ProductoServicioFoto : (foto ? {create:{foto}} : undefined)
-        }
-        
+        data 
       });
       return newProduct;
     }
@@ -32,7 +35,7 @@ class ProductService {
         data:{foto:photo}
       });
     }
-    
+
     async getPictureById(pictureId:number){ // No creo que esta función contribuya, no tenemos el id de las imágenes fuera de estas. 
       return await prismaClient.productoServicioFoto.findFirst({
         where:{idFoto:pictureId}
@@ -52,7 +55,7 @@ class ProductService {
       })
     }
 
-    async updateProduct(productId:number, newProductData:Prisma.ProductoServicioUncheckedCreateInput){
+    async updateProduct(productId:number, newProductData:UpdateProduct){
       return await prismaClient.productoServicio.update({
         where:{id:productId},
         data:newProductData

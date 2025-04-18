@@ -17,7 +17,7 @@ class UserController{
         if(await this.service.findEmail(parsed.data.email)){
             throw(new Error("Email already has an associated account"));
         }
-        this.service.createUser(parsed.data);
+        return await this.service.createUser(parsed.data);
     }
 }
 
