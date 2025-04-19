@@ -43,7 +43,7 @@ class ProductService {
     }
 
     async deleteProductPicture(pictureId:number){
-      return await prismaClient.productoServicioFoto.findUnique({
+      return await prismaClient.productoServicioFoto.delete({
         where:{idFoto:pictureId}
       })
     }

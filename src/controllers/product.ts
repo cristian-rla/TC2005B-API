@@ -114,6 +114,19 @@ class ProductController{
 
     // Aquí no es necesario borrar la imagen porque desde el servicio de base de datos ya tenemos una cascada que borra el registro de foto si existe una relación
     async deleteProduct(id:number){
+
+        const product = await this.service.getById(id);
+        if(!product){
+            throw new Error(`El producto bajo el identificador ${id} no existe`);
+        }
+
+        if(product.idFoto){
+            const picture = await this.service.deleteProductPicture(product.idFoto); // Se realiza manualmente aunque tenga cascade porque la relación es uno a muchos (para evitar el unique y tener varios campos con idFoto null).
+            if(picture){ // Si esto es falso, entonces el producto apunta a un registro de foto eliminado de la base de datos.
+                await deleteImage(picture.foto);
+            }
+        }
+
         return await this.service.deleteProduct(id);
     }
 }

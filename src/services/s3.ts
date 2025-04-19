@@ -38,7 +38,7 @@ export async function deleteImage(imageUrl:string){
     }
     const deletion = await s3.send(new DeleteObjectCommand(params));
 
-    if (deletion.$metadata.httpStatusCode != 200){
+    if (deletion.$metadata.httpStatusCode !== 200 && deletion.$metadata.httpStatusCode !== 204){
         throw new ImgServiceError("No se pudo borrar la imagen en el servicio.", "DELETION_FAILED", 500, params.Key);
     }
 };
