@@ -27,7 +27,7 @@ class ProductController{
             precio:productDTO.data.precio
         }; 
         try{
-            let productUrl;
+            let productUrl:string | undefined;
 
             if (productDTO.data.productoImagen)            // Se ejecuta si existe una imagen asociada
                 productUrl= await uploadImage(productDTO.data.productoImagen);
