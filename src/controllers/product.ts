@@ -1,9 +1,9 @@
 import { ProductService } from "../db/product" 
-import { createProductSchema, productDTOSchema, updateProductSchema } from "../schemas/productSchema";
+import { createProductSchema, productDTOSchema, updateProductDTOSchema, updateProductSchema } from "../schemas/productSchema";
 import {singleProductService} from "../db/product"
 import { z } from "zod";
 import {deleteImage, uploadImage} from "../services/s3";
-import { DbProductError, ImgServiceError } from "../schemas/appError";
+import { DbProductError, ImgServiceError, DbProductErrorWithPicture } from "../schemas/appError";
 
 type CreateProduct = z.infer<typeof createProductSchema>;
 
@@ -27,17 +27,15 @@ class ProductController{
             precio:productDTO.data.precio
         }; 
         try{
-            // Se ejecuta si existe una imagen asociada
             let productUrl;
-            if (productDTO.data.productoImagen){
-                productUrl= await uploadImage(productDTO.data.productoImagen);
-                const newProductPicture = await singleProductService.createPicture(productUrl);
-                productData.idFoto = newProductPicture.idFoto;
-            }
 
+            if (productDTO.data.productoImagen)            // Se ejecuta si existe una imagen asociada
+                productUrl= await uploadImage(productDTO.data.productoImagen);
+            
             try{
-                return await this.service.createProduct(productData);
-            } catch(error){
+                return await this.service.createProduct({...productData, productUrl});
+            } catch(error){ // Ya se subió la imagen (si fue especificada) pero no se pudo completar el producto
+                console.log(error);
                 throw new DbProductError("No se pudo crear el producto", "PRODUCT_FAILED_UPLOAD", 500, productUrl);
             }
             
@@ -45,19 +43,23 @@ class ProductController{
             if(error instanceof DbProductError){
                 switch (error.code){
                     case("PRODUCT_PICTURE_FAILED_UPLOAD"):{
-                        deleteImage(error.imageUrl!); // Aquí se sabe que es necesario que se mande un imageUrl al poner este código
+                        if(!error.imageUrl){ // La imagen debería ser definida si es que la función del servicio de almacenamientos no arrojó errores.
+                            throw error; 
+                        }
+                        await deleteImage(error.imageUrl);
                         break;
-                    }case("PRODUCT_FAILED_UPLOAD"):{
+                    }case("PRODUCT_FAILED_UPLOAD"):{ // Si no se creó el producto, entonces no hay ningúna imagen que borrar, se crean al mismo tiempo
+                        // imageUrl es undefined si no se estableció una imagen o si el bucket no completó bien la subida (pero ya arroja errores internos).
                         if(error.imageUrl){
-                            deleteImage(error.imageUrl);
-                            this.service.deleteProductPicture(error.pictureId!);
+                            console.log(error);
+                            await deleteImage(error.imageUrl);
                         }
                         break;
                     }
                 }
-            } else{
-                throw error;
+
             }
+            throw error;
         }
     }
 
@@ -67,7 +69,7 @@ class ProductController{
 
     // Aquí solamente se especifican los datos que se cambiaron, por ende, si se mandó una imagen, no se comprobará si es la misma o no.
     async updateProduct(id:number, sentProductDTO:unknown){
-        const productDTO = updateProductSchema.safeParse(sentProductDTO);
+        const productDTO = updateProductDTOSchema.safeParse(sentProductDTO); // UTILIZAR STRIP PARA NO MANDAR DATOS DE MÁS A LA CAPA DE BASE DE DATOS
         if(!productDTO.success){
             throw(new Error("Los datos no coinciden con el schema"));
         }
@@ -78,34 +80,49 @@ class ProductController{
         }
 
         try{
+            let pictureUrl:string | undefined;
             if (productDTO.data.productoImagen){ // Este condicional es necesario porque puede ser null, y getPictureById no acepta valores nulos. Arroja error
-                if(previousData.idFoto !== null){
-                    await this.service.deleteProductPicture(previousData.idFoto);
-                }
-                const imageUrl = await uploadImage(productDTO.data.productoImagen)
-                const newProductPicture = await singleProductService.createPicture(imageUrl);
-                try{
-                    return await this.service.updateProduct(id, {...productDTO.data, idFoto:newProductPicture.idFoto});
-                } catch(error){
-                    throw new DbProductError("No se pudo crear el producto", "PRODUCT_FAILED_UPLOAD", 500, imageUrl);
-                }
+                const pastPicture = await this.service.getProductOfPicture(previousData.id);
+                pictureUrl = await uploadImage(productDTO.data.productoImagen);
+
+                if(pastPicture){ // si ya se tenía una imagen antes, y se sube otra imagen, se actualiza
+                    await this.service.updatePicture(pastPicture.idFoto, pictureUrl);
+                    await deleteImage(pastPicture.foto);
+                    
+                } else { // No existía una foto antes, así que se tiene que crear una y asignarla al producto
+                    await this.service.createPicture(id,pictureUrl);
+                }                
+            }
+
+            const product = {
+                nombre:productDTO.data.nombre,
+                precio:productDTO.data.precio,
+                stock:productDTO.data.stock, 
             }
             
-            return await this.service.updateProduct(id, productDTO.data);
+            try{
+                return await this.service.updateProduct(id, product);
+            } catch(error){ 
+                // ES NECESARIO BORRAR LA FOTO QUE SE CREO JUSTO PARA ESTE OBJETO EN CASO DE QUE HAYA HABIDO UN ERROR EN EL UPDATE PRODUCT
+                console.log(error);
+                throw new DbProductError("No se pudo actualizar el producto", "PRODUCT_FAILED_UPDATE", 500, pictureUrl);
+            }
+            
         } catch(error){
             if(error instanceof DbProductError){
                 switch (error.code){
-                    case("PRODUCT_PICTURE_FAILED_UPLOAD"):{
+                    case("PRODUCT_PICTURE_FAILED_UPDATE"):{ // Aquí no es necesario borrar la imagen ya asociada al producto
+                        console.log(error);
                         deleteImage(error.imageUrl!); // Aquí se sabe que es necesario que se mande un imageUrl al poner este código
                         break;
-                    }case("PRODUCT_FAILED_UPLOAD"):{
+                    }case("PRODUCT_FAILED_UPDATE"):{ // No es necesario borrar ninguna imagen 
                         if(error.imageUrl){
-                            deleteImage(error.imageUrl);
-                            this.service.deleteProductPicture(error.pictureId!);
+                            console.log(error);
                         }
                         break;
                     }
                 }
+                throw error;
             } else{
                 throw error;
             }
@@ -120,11 +137,8 @@ class ProductController{
             throw new Error(`El producto bajo el identificador ${id} no existe`);
         }
 
-        if(product.idFoto){
-            const picture = await this.service.deleteProductPicture(product.idFoto); // Se realiza manualmente aunque tenga cascade porque la relación es uno a muchos (para evitar el unique y tener varios campos con idFoto null).
-            if(picture){ // Si esto es falso, entonces el producto apunta a un registro de foto eliminado de la base de datos.
-                await deleteImage(picture.foto);
-            }
+        if(product.ProductoServicioFoto){
+            await deleteImage(product.ProductoServicioFoto.foto);
         }
 
         return await this.service.deleteProduct(id);

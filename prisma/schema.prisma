@@ -73,9 +73,10 @@ model Estado {
   negociaciones Negociacion[]
 }
 model ProductoServicioFoto {
-  idFoto               Int                   @id @default(autoincrement())
-  foto                 String                @db.VarChar(512)
-  ProductoServicios    ProductoServicio[]    @relation("ProductoFoto") // Ahora permite varios productos
+  idFoto               Int                    @id @default(autoincrement())
+  foto                 String                 @db.VarChar(512)
+  productoId           Int                    @unique
+  ProductoServicio     ProductoServicio       @relation("ProductoFoto", fields: [productoId], references: [id], onDelete:Cascade)
 }
 
 model ProductoServicio {
@@ -83,8 +84,7 @@ model ProductoServicio {
   nombre                String                 @db.VarChar(30)
   precio                Float
   stock                 Int
-  idFoto                Int?                   // Ahora no es único
-  ProductoServicioFoto  ProductoServicioFoto?  @relation("ProductoFoto", fields: [idFoto], references: [idFoto], onDelete: Cascade)
+  ProductoServicioFoto  ProductoServicioFoto?  @relation("ProductoFoto")
   negociaciones         ProductoNegociacion[]
 }
 

@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import productRouter from "./src/routes/product"
@@ -5,6 +6,9 @@ import negotiationRouter from "./src/routes/negotiation"
 import clientRouter from "./src/routes/client"
 import authRouter from "./src/routes/auth"
 import userRouter from "./src/routes/user"
+
+dotenv.config();
+
 const app = express();
 
 app.use(express.json());

@@ -3,7 +3,7 @@
 
 import {z} from 'zod'
 
-// Este tipo es el que llega desde el request
+// Este tipo es el que llega desde el request -----------------------------------------------------------
 const image = z.object({    
     originalFilename: z.string().optional(),
     filepath: z.string(),
@@ -19,22 +19,22 @@ const productDTOSchema = z.object({
     productoImagen:image.optional() // ESTE NOMBRE CAMBIA DEPENDIENDO DEL ELEMENTO HTML QUE LO MANDA
 })
 
-// Esto se manda a la base de datos
+const updateProductDTOSchema = productDTOSchema.partial();
+
+// Esto se manda a la base de datos --------------------------------------
 const createProductSchema = z.object({
     nombre:z.string().min(1),
     precio:z.number(),
     stock:z.number(),
-    idFoto:z.number().optional()
+    productUrl:z.string().optional()
 })
 
+// Ahora, aparte de que cualquier dato puede o puede no estar, como se tiene el producto desde el frontend, también son accesibles los idFotos si es que tienen una, atributo faltante en el productDTOSchema
+const updateProductSchema = createProductSchema.partial();
 
+// Esto regresa la base de datos ---------------------------------------------
 const productSchema = createProductSchema.extend({
     id:z.number()
 });
 
-// Ahora, aparte de que cualquier dato puede o puede no estar, como se tiene el producto desde el frontend, también son accesibles los idFotos si es que tienen una, atributo faltante en el productDTOSchema
-const updateProductSchema = productDTOSchema.extend({
-    idFoto:z.number().optional()
-}).partial();
-
-export {productSchema, updateProductSchema, productDTOSchema, createProductSchema, image};
+export {productSchema, updateProductSchema, productDTOSchema, updateProductDTOSchema, createProductSchema, image};

@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import {image} from "../schemas/productSchema"
 import { ImgServiceError } from '../schemas/appError';
+
+dotenv.config();
 
 const S3BucketName = process.env.S3_BUCKET_NAME;
 

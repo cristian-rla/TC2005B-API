@@ -1,5 +1,4 @@
-import { isCryptoKey } from "util/types";
-
+// AGREGAR DATA PARA CUANDO SEA UN ERROR DE PRISMA POR EJEMPLO, 
 export default class AppError extends Error{
     code:string;
     statusCode:number;
@@ -20,12 +19,19 @@ export class ImgServiceError extends AppError{
     }
 }
 
+// No se puede tener el Id aquí porque se crean al mismo tiempo en Prisma el producto y la imagen
 export class DbProductError extends AppError{
     imageUrl?:string;
-    pictureId?:number;
-    constructor(message:string, code:string, statusCode:number, imageUrl?:string, pictureId?:number){
+    constructor(message:string, code:string, statusCode:number, imageUrl?:string){
         super(message, code, statusCode);
         this.imageUrl = imageUrl;
-        this.pictureId = pictureId;
+    }
+}
+
+export class DbProductErrorWithPicture extends AppError{
+    imageUrl:string;
+    constructor(message:string, code:string, statusCode:number, imageUrl:string){
+        super(message, code, statusCode);
+        this.imageUrl = imageUrl;
     }
 }
