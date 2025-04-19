@@ -1,8 +1,5 @@
 import { UserService } from "../db/user"
 import { userSchema } from "../schemas/userSchema"
-import { z } from "zod";
-
-type User = z.infer<typeof userSchema>;
 
 class UserController{
     service:UserService;

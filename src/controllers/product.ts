@@ -1,11 +1,9 @@
-import { ProductService } from "../db/product" 
-import { createProductSchema, productDTOSchema, updateProductDTOSchema, updateProductSchema } from "../schemas/productSchema";
-import {singleProductService} from "../db/product"
-import { z } from "zod";
+import { singleProductService } from "../db/product" 
+import { CreateProduct, productDTOSchema, updateProductDTOSchema, updateProductSchema } from "../schemas/productSchema";
 import {deleteImage, uploadImage} from "../services/s3";
 import { DbProductError, ImgServiceError, DbProductErrorWithPicture } from "../schemas/appError";
 
-type CreateProduct = z.infer<typeof createProductSchema>;
+type ProductService = typeof singleProductService;
 
 class ProductController{
     service:ProductService;

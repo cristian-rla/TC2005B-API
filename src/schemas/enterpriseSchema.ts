@@ -1,11 +1,16 @@
 import {z} from 'zod'
 
-const enterpriseSchema = z.object({
+/*=================================================================================================
+    HTTP ENTERPRISE SCHEMAS (Datos recibidos en la capa handler)
+====================================================================================================*/
+export const enterpriseSchema = z.object({
     nombre: z.string().min(1),
     industria: z.string().min(1),
     foto: z.string().optional()
 });
 
-const enterpriseSchemaQuery = enterpriseSchema.partial();
+export type EnterpriseRequest = z.infer<typeof enterpriseSchema>;
 
-export {enterpriseSchema, enterpriseSchemaQuery};
+/*=================================================================================================
+    HTTP PRODUCT SCHEMAS (Datos recibidos en la capa handler)
+====================================================================================================*/

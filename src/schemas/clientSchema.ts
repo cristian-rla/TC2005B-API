@@ -1,6 +1,6 @@
 import {z} from 'zod'
 
-const clientSchema = z.object({
+export const clientSchema = z.object({
     correo: z.string().min(1),
     nombre: z.string().min(1),
     telefono: z.string().min(7).max(12),
@@ -8,6 +8,4 @@ const clientSchema = z.object({
     idEmpresa:z.number().min(1)
 });
 
-const clientSchemaQuery = clientSchema.partial();
-
-export {clientSchema, clientSchemaQuery};
+export type CreateClient = z.infer<typeof clientSchema>

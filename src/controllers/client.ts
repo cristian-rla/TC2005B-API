@@ -1,9 +1,8 @@
-import { z } from "zod";
 import { ClientService } from "../db/client"
 import { singleEnterpriseService } from "../db/enterprise";
 import { clientSchema } from "../schemas/clientSchema";
+import { uploadImage } from "../services/s3"
 
-type Client = z.infer<typeof clientSchema>;
 
 class ClientController{
     service:ClientService;

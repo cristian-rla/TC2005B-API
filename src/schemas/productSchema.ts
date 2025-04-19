@@ -3,8 +3,10 @@
 
 import {z} from 'zod'
 
-// Este tipo es el que llega desde el request -----------------------------------------------------------
-const image = z.object({    
+/*=================================================================================================
+    HTTP PRODUCT SCHEMAS (Datos recibidos en la capa handler)
+====================================================================================================*/
+export const image = z.object({    
     originalFilename: z.string().optional(),
     filepath: z.string(),
     mimetype: z.string().optional(),
@@ -12,29 +14,38 @@ const image = z.object({
     newFilename: z.string()
 })
 
-const productDTOSchema = z.object({
+export const productDTOSchema = z.object({
     nombre:z.string().min(1),
     precio:z.number(),
     stock:z.number(),
-    productoImagen:image.optional() // ESTE NOMBRE CAMBIA DEPENDIENDO DEL ELEMENTO HTML QUE LO MANDA
+    productoImagen:image.optional() // El nombre de este campo se origina desde el request. Desde el frontend, el nombre del campo debe coincidir.
 })
 
-const updateProductDTOSchema = productDTOSchema.partial();
+export const updateProductDTOSchema = productDTOSchema.partial();
 
-// Esto se manda a la base de datos --------------------------------------
-const createProductSchema = z.object({
+export type ProductRequest = z.infer<typeof productDTOSchema>;
+export type ImageRequest = z.infer<typeof image>;
+export type UpdateProductRequest = z.infer<typeof updateProductDTOSchema>;
+
+/*=================================================================================================
+    DATABASE PRODUCT SCHEMAS (Formato para queries en la base de datos)
+====================================================================================================*/
+export const createProductSchema = z.object({
     nombre:z.string().min(1),
     precio:z.number(),
     stock:z.number(),
     productUrl:z.string().optional()
 })
+export const updateProductSchema = createProductSchema.partial();
 
-// Ahora, aparte de que cualquier dato puede o puede no estar, como se tiene el producto desde el frontend, también son accesibles los idFotos si es que tienen una, atributo faltante en el productDTOSchema
-const updateProductSchema = createProductSchema.partial();
+export type CreateProduct = z.infer<typeof createProductSchema>
+export type UpdateProduct = z.infer<typeof updateProductSchema>
 
-// Esto regresa la base de datos ---------------------------------------------
-const productSchema = createProductSchema.extend({
+/*=================================================================================================
+    DATABASE RETURN PRODUCT SCHEMAS (Datos enviados desde la base de datos)
+====================================================================================================*/
+export const productSchema = createProductSchema.extend({
     id:z.number()
 });
 
-export {productSchema, updateProductSchema, productDTOSchema, updateProductDTOSchema, createProductSchema, image};
+export type Product = z.infer<typeof productSchema>

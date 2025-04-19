@@ -1,10 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prismaClient from "./prisma";
-import { z } from "zod";
-import { productSchema, createProductSchema, updateProductSchema } from "../schemas/productSchema";
-
-type CreateProduct = z.infer<typeof createProductSchema>;
-type UpdateProduct = z.infer<typeof updateProductSchema>
+import { CreateProduct, UpdateProduct } from "../schemas/productSchema";
 
 class ProductService {
     async getAllProducts() {
@@ -49,19 +45,13 @@ class ProductService {
       });
     }
 
-    // async getPictureById(pictureId:number){ // No creo que esta función contribuya, no tenemos el id de las imágenes fuera de estas. 
-    //   return await prismaClient.productoServicioFoto.findFirst({
-    //     where:{idFoto:pictureId}
-    //   });
-    // }
-
     async deleteProductPicture(pictureId:number){
       return await prismaClient.productoServicioFoto.delete({
         where:{idFoto:pictureId}
       })
     }
 
-    async updatePicture(pictureId:number, newPhoto:string){ // CHECAR. PUEDE UNIRSE A UPDATE PRODUCT
+    async updatePicture(pictureId:number, newPhoto:string){ 
       return await prismaClient.productoServicioFoto.update({
         where:{idFoto:pictureId},
         data:{foto:newPhoto}
@@ -86,6 +76,5 @@ class ProductService {
 
 const singleProductService = new ProductService();
 
-export default singleProductService;
-export {ProductService, singleProductService};
+export {singleProductService};
 // Si hago el export default con los dos entre llaves, exportas solo un objeto

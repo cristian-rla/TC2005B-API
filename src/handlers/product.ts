@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import ProductController from "../controllers/product"
-import productService from '../db/product';
+import {singleProductService} from '../db/product';
 import {Fields, Files, IncomingForm, File} from "formidable";
 
-const productController = new ProductController(productService);
+const productController = new ProductController(singleProductService);
 
 
 class ProductHttpHandler {
